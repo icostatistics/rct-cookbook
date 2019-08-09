@@ -1,0 +1,31 @@
+--- 
+title: "Analyzing RCTs: A Cookbook"
+author: "Inge Christoffer Olsen"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook: default
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+graphics: yes
+github-repo: rstudio/bookdown-demo
+description: "The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials"
+---
+
+# Preface
+
+About the book 
+
+## Structure of the book
+
+## Acknowledgements
+
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```

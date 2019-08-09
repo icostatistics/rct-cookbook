@@ -1,0 +1,17 @@
+# Dichotomous endpoints
+
+```{r setup_03, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(tidyverse)
+library(broom)
+library(knitr)
+library(purrr)
+library(lme4)
+library(margins)
+library(emmeans)
+```
+
+## Single follow-up
+When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs [Guideline on adjustment for baseline covariates in clinical trials](http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf) we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. In our simulated data set this means to adjust for site and the "covar"" variable. In this example we define that the primary outcome is the continuous outcome at time 3.
+

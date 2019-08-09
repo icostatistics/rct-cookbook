@@ -1,0 +1,396 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup_02, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(tidyverse)
+library(broom)
+library(knitr)
+library(purrr)
+library(lme4)
+library(margins)
+library(emmeans)
+```
+# Continuous endpoints
+
+## Single follow-up
+When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs [Guideline on adjustment for baseline covariates in clinical trials](http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf) we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. In our simulated data set this means to adjust for site and the "covar"" variable. In this example we define that the primary outcome is the continuous outcome at time 3.
+
+### Stata code
+
+```{stata sancova1_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use "stata/rct", clear 
+regress contout i.trt i.site covar contbl if time==3
+```
+Note that we here looked at the outcome at time 3 as the primary outcome. It does not matter if we use this or the change from baseline to time 3, due to the baseline adjustment:
+
+```{stata sancova2_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use stata/rct, clear 
+gen diff = contout - contbl 
+regress diff i.trt i.site covar contbl if time==3
+```
+We see that the only difference is that the baseline parameter estimate shifts with one unit. 
+
+### R code
+
+```{r rancova_02}
+rct <- read_dta("stata/rct.dta") %>% 
+  modify_at(c("trt","catout"), haven::as_factor, levels = "labels") %>% 
+  modify_at(c("site","time"), haven::as_factor)
+rct %>% 
+  filter(time==3) %>%
+  lm(contout ~ trt + site + covar + contbl, data=.) %>%
+  summary
+```
+
+We see that the parameter estimates are identical. 
+
+```{r}
+# test1 <- rct %>% 
+#   filter(time==3) %>%
+#   lm(contout ~ trt + site + covar + contbl, data=.)
+# 
+# test1 <- rct %>% 
+#   filter(time==3) %>%
+#   lm(contout ~ trt + site, data=.) %>%
+#   prediction(at = list(trt = c("Active", "Placebo")))
+# 
+# #tmp <- car::deltaMethod(test1, "Intercept + trtActive + site2 + covar + contbl")
+# 
+#   test2 <- prediction(test1,data = rct,at = list(trt = c("Active", "Placebo"))) %>%
+#     as_tibble %>%
+#     filter(time == 3) %>%
+#     
+#   
+#   test2 %>%
+#     group_by(trt) %>%
+#     summarise(mean = mean(fitted), se = median(se.fitted), n=n())
+#   
+#  test1 %>%
+#    ref_grid() %>%
+#   emmeans( ~ trt)
+```
+
+
+
+### Reporting
+According to the [CONSORT Statement](consort-statement.org) item 17a: 
+> For each outcome, study results should be reported as a summary of the outcome in each group (for example, the number of participants with or without the event and the denominators, or the mean and standard deviation of measurements), together with the contrast between the groups, known as the effect size. 
+
+For the single follow-up we present the mean and standard deviaiton for the outcome in addition to the effect size at follow-up (time 3). There is some coding to get the format right, but the nice thing is that the table could be pasted directly into the article. There are many ways to program this, the below example is one way. 
+
+```{r reporting_02}
+
+#Two functions to produce the mean (sd) and est (lci to uci) output--------------------
+get_meansd <- function(m, s, d=2){
+  paste(round(m, digits=d)," (",round(s,digits=d),")")
+}
+get_estci <- function(e, l, u, d=2){
+  paste(round(e, digits=d), " (", round(l, digits=d), " to ", round(u, digits=d),")")
+}
+
+# Compile the summary measures---------------------------------------------------------
+single_cont_sum <- rct %>% 
+  group_by(trt) %>% 
+  filter(time==3) %>% 
+  select(contout, trt) %>% 
+  summarise_all(list(~mean(.),~sd(.))) %>% 
+  mutate(txt1=get_meansd(mean,sd)) %>%
+  select(trt,txt1) %>%
+  spread(key=trt,value=txt1)
+
+# Compile the estimates --------------------------------------------------------------
+single_cont_est <- rct %>% 
+  filter(time==3) %>%
+  lm(contout ~ trt + site + covar + contbl, data=.) %>%
+  tidy(conf.int=TRUE) %>%
+  filter(term=="trtActive") %>%
+  mutate(txt2=get_estci(estimate,conf.low,conf.high)) %>%
+  select(term,txt2)
+
+# Combine and produce the table -----------------------------------------------------
+single_cont_sum %>% 
+  bind_cols(single_cont_est) %>%
+  mutate(txt="Outcome at time 3, mean (sd)") %>%
+  select(txt,Active, Placebo, txt2) %>% 
+  kable(col.names=c("Outcome", "Active", "Placebo", "Effect size with 95% confidence limits"))
+```
+
+## Repeated follow-up
+When the measurements are repeated, I usually use mixed models to model the data. The challenge with mixed models is that the effect size can be estimated in several ways, depending on the model specification.
+
+### Simple model
+The simplest model is a model with random intercept and treatment, time and other baseline covariates as fixed effects.
+
+$$ Y_{ij} =  \mu_j + A_i + \mu_{trt} + \mu_{strat} + a_1 X_1 +  \epsilon_{ij} $$
+
+where $Y_{ij}$ is the contiuous outcome for individual $i$ at time $j$, $\mu_j$ is the overall mean at time $j$, $A_i$ is the random intercept for individual $i$, $\mu_{trt}$ is the mean treatment effect, $\mu_{strat}$ is the mean effect of strata, $a_1$ is the slope parameter of baseline covariate $X_1$, and $\epsilon_{ij}$ is the residual. The expression is sloppy, but should be readable. 
+
+In Stata, this model is coded as
+
+```{stata smixed1_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use stata/rct, clear 
+mixed contout i.trt i.site i.time covar || pid: 
+```
+
+In R this the model is coded as
+
+```{r rmixed1_02}
+rct %>%
+  lmer(contout ~ trt + site + time + covar + (1|pid),data=., REML=FALSE) %>%
+  summary(correlation=FALSE)
+```
+Note that we need to specify "REML=FALSE" to produce Maximum Likelihood estimates to be consistent with the Stata estimates. 
+
+This is clear not a good model since it assumes that the treatment effect is the same at all timepoints (including baseline). Since we should assume no treatment difference at baseline, the model is clearly wrong. We see this when we plot the model estimates through the "margins" and "marginsplot" procedures in Stata, and the "margins"-package in R. The "margins"-package is a port from Stata.  
+
+<!-- Note that the Stata offers the best way to present the marginal estimates through the 'margins' and 'marginsplt' procedures. I have not been able to find R packages that integrates this in a similar consistent way, although the 'margins' R package delivers some of the functionality.   -->
+
+```{stata smixed2_02, engine.path='/usr/local/bin/stata-se', results=TRUE, cache = TRUE, dependson = 'sim'}
+use stata/rct, clear 
+mixed contout i.trt i.site i.time covar || pid: 
+
+*Compute the marginal estimates by time and treatment
+
+margins time#trt
+
+*Plot the marginal estimates. Note that the arguments after the comma is just to prettify the plot.
+
+marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(color(white)) ytitle("Marginal estimates") ylabel(,nogrid)  legend(region(color(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title("")
+graph export stata/figures/cont_fig1.pdf, replace 
+```
+
+<!-- ![Simple mixed model marginal estimates](stata/figures/cont_fig1.pdf) -->
+
+```{r, out.width="85%", fig.cap="Simple mixed model marginal plot from Stata", results = TRUE, include =  FALSE}
+knitr::include_graphics("stata/figures/cont_fig1.pdf")
+```
+
+We will show how to code this in R below. The code is similar. 
+
+
+### Model with treatment-time interaction
+
+A better solution would be to add a treatment-time interaction to the mixed model to loosen the assumption that the treatment effect is equal across time. 
+
+In Stata, the model is coded as:
+
+```{stata smixed3_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use stata/rct, clear 
+mixed contout i.trt i.time i.trt#i.time i.site covar || pid: 
+```
+
+In R this model is coded as
+
+```{r rmixed3_02, warning=FALSE}
+
+rct %>%
+  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
+  summary(correlation=FALSE)
+```
+
+The problem with the results as presented both by Stata and R is that they are difficult to interpret. The solution is to use predictive margins and corresponding marginal plots.  First we plot the predictive margins by treatment:
+
+```{stata smixed3plot_02, engine.path='/usr/local/bin/stata-se', include=TRUE, cache = TRUE, , dependson = 'sim'}
+use stata/rct, clear 
+mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
+
+*Compute the predictive margins by time and treatment
+
+margins time#trt
+
+*Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
+
+marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(color(white)) ytitle("Marginal estimates") ylabel(,nogrid)  legend(region(color(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title("")
+graph export stata/figures/cont_fig2.pdf, replace 
+```
+
+```{r, out.width="85%", fig.cap="Margins plot by Stata"}
+knitr::include_graphics("stata/figures/cont_fig2.pdf")
+```
+
+From this we can estimate the treatment difference at the different timepoints:
+```{stata smixed3diff_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use stata/rct, clear 
+quietly mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
+
+*Compute the marginal treatment differences
+
+margins time, dydx(trt)
+```
+
+This can also be achieved in R by:
+```{r rmixed3diff_02, warning=FALSE }
+
+trt_margins <- rct %>%
+  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
+  margins(model = .,variables = "trt", at= list(time=c("0","1","2", "3")), vce = "delta") %>%
+  summary() 
+
+as_tibble(trt_margins)
+
+
+
+
+```
+
+```{r}
+ predict <- rct %>%
+  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
+  ref_grid() %>%
+  emmeans( ~ trt | time) %>%
+  tidy
+ 
+
+
+predict %>%
+  as_tibble %>%
+  group_by(trt, time) %>%
+  summary(mean = mean)
+
+```
+
+
+
+A corresponding estimated marginal means plot can be made in R by using the emmeans package. 
+
+```{r rmixed3plot_02}
+
+
+rct %>%
+  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
+  ref_grid() %>%
+  emmeans( ~ trt | time) %>%
+  tidy %>%
+  ggplot(aes(time, estimate, color=trt, group=trt)) +
+  geom_point(position = position_dodge(0.04)) +
+  geom_line() + 
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                width=.2,
+                position = position_dodge(0.04)) + 
+  ylab("Estimate") +
+  xlab("Time") +
+  theme_classic() + 
+  theme(legend.position=c(0.1,0.9)) +
+  scale_colour_brewer(palette = "Set1", name = "Treatment") 
+
+
+
+```
+
+Note that Stata's predictive margins and R's estimated marginal means has slightly different interpretations, especially when the data are not balanced. R can also produce predictive margins using the prediction-package, but there is a challenge with the confidence intervals. The best way to handle this is by bootstrapping, see example below. 
+
+
+
+```{r rmixed3boot, cache = TRUE}
+library(boot)
+
+ fpred <- function(formula, data, indices){
+   d <- data[indices,]
+   fit <- lmer(formula, data = d, REML=F)
+   pred <- prediction(fit,data = d, at = list(trt = c("Active", "Placebo"), time = c("0", "1", "2", "3"))) %>%
+     as_tibble %>%
+     group_by(trt, time) %>%
+     summarise(mean = mean(fitted)) %>%
+     ungroup() %>%
+     mutate(name = paste0(trt,time)) %>%
+     select(name,mean) %>%
+     spread(name,mean) %>%
+     as_vector
+   return(pred)
+ }
+ 
+ data <- rct
+ result <- boot(data = data, statistic = fpred, R = 1000, formula = contout ~ trt + time + trt*time + site + covar + (1|pid))
+ result
+```
+
+
+### Model with treatment-time interaction and baseline information
+Now, the above model is correct, and will provide unbiased estimates of the time and treatment specific means, including treatment differences at each timepoint. However, there is one piece of information left out of the model, and this is that we know there is no treatment difference at baseline. Thus, we can and should set this parameter to zero. 
+
+
+In Stata, the model is implemented by using a constraint on the parameter space. This can only be done using -meglm-, which is a generalised version of -mixed-:
+
+```{stata smixed4_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use stata/rct, clear
+
+*Constrain the baseline treatment difference to be zero 
+
+constraint 1 i1.trt#i0.time = 0 
+
+*Use the constraint in the model
+
+meglm contout  i.trt#i.time i.site covar || pid:, constraints(1) 
+quietly margins time#trt
+marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(color(white)) ytitle("Marginal estimates") ylabel(,nogrid)  legend(region(color(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title("")
+graph export stata/figures/cont_fig2.pdf, replace 
+```
+```{r, out.width="85%", fig.cap="Margins plot from Stata"}
+knitr::include_graphics("stata/figures/cont_fig2.pdf")
+```
+
+
+The estimates of the treatment differences at the different timepoints is then given by:
+```{stata smixed4diff_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use stata/rct, clear 
+constraint 1 i1.trt#i0.time = 0  
+quietly meglm contout  i.trt#i.time i.site covar || pid:, constraints(1)  
+margins time, dydx(trt)
+```
+
+
+The same can be accomplished in R by adding a third treatment level (level at baseline):
+
+```{r rmixed4_02, warning=FALSE}
+
+rmixed4_2 <- rct %>%
+  mutate(trt2 = if_else(time == 0,0,as.numeric(trt))) %>%
+  mutate(trt2f = factor(trt2)) %>%
+  lmer(contout ~ time + trt2f +  trt2f*time + site + covar + (1|pid),data=., REML=FALSE) 
+
+summary(rmixed4_2)
+
+rmixed4_2 %>%
+  margins(model = .,variables = "trt2f", at= list(time=c("1","2", "3")), vce = "delta") %>%
+  summary() %>%
+  filter(!is.na(z))
+
+
+```
+
+The estimated marginal plot is given by:
+```{r rmixed4plot_02, warning=FALSE}
+plotobject <- 
+  rct %>%
+  mutate(trt2 = trt) %>%
+  mutate(trt2 = fct_expand(trt2,"0")) %>%
+  mutate(trt2 = if_else(time != "0",trt2,factor(0) )) %>%
+  lmer(contout ~ time +  trt2 +  trt2*time + site + covar + (1|pid),data=., REML=FALSE)  %>%
+  ref_grid() %>%
+  emmeans( ~ trt2 | time) %>%
+  tidy() %>%
+  filter((trt2 != 0 & time != 0)   | (trt2==0 & time == 0)) %>%
+  bind_rows(.,mutate(filter(.,trt2==0 & time==0),trt2 = fct_recode(trt2,"Placebo"="0"))) %>%
+  mutate(trt2= fct_recode(trt2,"Active" = "0")) 
+
+
+plotobject %>%
+  ggplot(aes(time, estimate, color=trt2, group=trt2)) +
+  geom_point(position = position_dodge(0.04)) +
+  geom_line() + 
+  xlab("Time") + 
+  ylab("Estimate") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                width=0.1,
+                position = position_dodge(0.04)) +
+  theme_classic() + 
+  theme(legend.position=c(0.1,0.9)) +
+  scale_colour_brewer(palette = "Set1", name="Treatment")
+```
+
+
