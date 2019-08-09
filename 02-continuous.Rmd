@@ -18,7 +18,7 @@ library(emmeans)
 # Continuous endpoints
 
 ## Single follow-up
-When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs [Guideline on adjustment for baseline covariates in clinical trials](http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf) we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. In our simulated data set this means to adjust for site and the "covar"" variable. In this example we define that the primary outcome is the continuous outcome at time 3.
+When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs [Guideline on adjustment for baseline covariates in clinical trials](http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf) we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. Usually this also means the baseline observation of the outcome. In our simulated data set this means to adjust for `site`, `contbl` and `covar` variables. In this example we define that the primary outcome is the continuous outcome at time 3.
 
 ### Stata code
 
@@ -49,31 +49,7 @@ rct %>%
 
 We see that the parameter estimates are identical. 
 
-```{r}
-# test1 <- rct %>% 
-#   filter(time==3) %>%
-#   lm(contout ~ trt + site + covar + contbl, data=.)
-# 
-# test1 <- rct %>% 
-#   filter(time==3) %>%
-#   lm(contout ~ trt + site, data=.) %>%
-#   prediction(at = list(trt = c("Active", "Placebo")))
-# 
-# #tmp <- car::deltaMethod(test1, "Intercept + trtActive + site2 + covar + contbl")
-# 
-#   test2 <- prediction(test1,data = rct,at = list(trt = c("Active", "Placebo"))) %>%
-#     as_tibble %>%
-#     filter(time == 3) %>%
-#     
-#   
-#   test2 %>%
-#     group_by(trt) %>%
-#     summarise(mean = mean(fitted), se = median(se.fitted), n=n())
-#   
-#  test1 %>%
-#    ref_grid() %>%
-#   emmeans( ~ trt)
-```
+
 
 
 

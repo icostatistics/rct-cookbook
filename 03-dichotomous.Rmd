@@ -13,5 +13,30 @@ library(emmeans)
 ```
 
 ## Single follow-up
-When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs [Guideline on adjustment for baseline covariates in clinical trials](http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf) we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. In our simulated data set this means to adjust for site and the "covar"" variable. In this example we define that the primary outcome is the continuous outcome at time 3.
+
+For a single follow-up assessment of a dichotomous endpoint, the main method I use is a standard logistic regression. Then we can adjust for stratification factors in the randomisation in addition to other pre-specified covariates, both categorical and continuous. In the simulated example, we define that the primary outcome is the dichotomous categorical outcome at time 3. Note that usually the baseline status of all patients are negative for the outcome, so adjusting for baseline is not necessary.
+
+### Stata code
+
+```{stata sancova1_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use "stata/rct", clear 
+tabulate catout trt
+logistic catout i.trt i.site covar  if time==3, coef
+```
+Note that the use the `coef` option to get the log odds ratio estimates. 
+ 
+### R code
+
+```{r rancova_02}
+rct <- read_dta("stata/rct.dta") %>% 
+  modify_at(c("trt","catout"), haven::as_factor, levels = "labels") %>% 
+  modify_at(c("site","time"), haven::as_factor)
+rct %>% 
+  filter(time==3) %>%
+  glm(catout ~ trt + site + covar , data=., family = binomial) %>%
+  summary
+```
+
+
+
 
