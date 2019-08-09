@@ -77,7 +77,7 @@ The trick is to know what goes into the _b[]-brackets, which will be revealed us
 Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits)
 
 
-
+testing
 
 
 
