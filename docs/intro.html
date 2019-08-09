@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Introduction | Analyzing RCTs: A Cookbook</title>
+  <meta name="description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
+  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Introduction | Analyzing RCTs: A Cookbook" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Introduction | Analyzing RCTs: A Cookbook" />
+  
+  <meta name="twitter:description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
+  
+
+<meta name="author" content="Inge Christoffer Olsen" />
+
+
+<meta name="date" content="2019-08-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="continuous-endpoints.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#structure-of-the-book"><i class="fa fa-check"></i><b>1.1</b> Structure of the book</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i><b>1.2</b> Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#trial-flow"><i class="fa fa-check"></i><b>2.1</b> Trial Flow</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#simulated-dataset"><i class="fa fa-check"></i><b>2.2</b> Simulated dataset</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html"><i class="fa fa-check"></i><b>3</b> Continuous endpoints</a><ul>
+<li class="chapter" data-level="3.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#single-follow-up"><i class="fa fa-check"></i><b>3.1</b> Single follow-up</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#stata-code"><i class="fa fa-check"></i><b>3.1.1</b> Stata code</a></li>
+<li class="chapter" data-level="3.1.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#r-code"><i class="fa fa-check"></i><b>3.1.2</b> R code</a></li>
+<li class="chapter" data-level="3.1.3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#reporting"><i class="fa fa-check"></i><b>3.1.3</b> Reporting</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#repeated-follow-up"><i class="fa fa-check"></i><b>3.2</b> Repeated follow-up</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#simple-model"><i class="fa fa-check"></i><b>3.2.1</b> Simple model</a></li>
+<li class="chapter" data-level="3.2.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#model-with-treatment-time-interaction"><i class="fa fa-check"></i><b>3.2.2</b> Model with treatment-time interaction</a></li>
+<li class="chapter" data-level="3.2.3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#model-with-treatment-time-interaction-and-baseline-information"><i class="fa fa-check"></i><b>3.2.3</b> Model with treatment-time interaction and baseline information</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html"><i class="fa fa-check"></i><b>4</b> Dichotomous endpoints</a><ul>
+<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
+<li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
+<li class="chapter" data-level="5.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>5.2</b> Example two</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analyzing RCTs: A Cookbook</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="intro" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Introduction</h1>
+<div id="trial-flow" class="section level2">
+<h2><span class="header-section-number">2.1</span> Trial Flow</h2>
+<p>The typical flow for an RCT should be something like:</p>
+<ol style="list-style-type: decimal">
+<li><p>Through hypothesis generating research, by clinical experience or sheer luck, a hypothesis has been developed.</p></li>
+<li><p>The hypothesis indicates that an intervention treatment is either superior, non-inferior or equivalent to an existing treatment (the control).</p></li>
+<li><p>A Population, the Intervention, the Control group and the Outcome measure (PICO) has been identified</p></li>
+<li><p>A protocol has been written, detailing the background, research aim, the population, the intervention and control treatment, which assessments will be done when and how the data will be collected, how safety will be assessed, and the principles on how the data will be analysed.</p></li>
+<li><p>All formal requirements has been met and the data capture method is set up. The first patient is included in the study.</p></li>
+<li><p>About 3-6 months prior to database lock, the statistical analysis plan (SAP) and corresponding code should be started. Regardless of blinding, a separate randomisation list, not equal to the actual allocation list, should be used to avoid biased analysis decisions. The coding should result in a generated report to be discussed with the clinician.</p></li>
+<li><p>When all data has been gathered and the database locked, the allocation list is opended, included in the code, and all code is run. The generated report should include all results required in the SAP.</p></li>
+<li><p>The statistician should by the involvement be a co-author with all requirements.</p></li>
+<li><p>The study is published.</p></li>
+</ol>
+</div>
+<div id="simulated-dataset" class="section level2">
+<h2><span class="header-section-number">2.2</span> Simulated dataset</h2>
+<p>To show the different analyses methods, we need to simulate an RCT. I use Stata to create the simulated dataset, mainly because it is easier to get data from Stata to R than the other way around.</p>
+<p>We simulate a trial with repeated measurements for a continuous and a dichotomous endpoint in addition to a time to event endpoint. We include site as a strata in the randomisation (influencing the outcome), and an independent covariate which is highly predictive of the outcome.</p>
+<pre class="stata"><code>*Setup the randomisation with strata and blocks
+ralloc block bsize trt, nsubj(50)  sav(stata/rct)  ntreat(2) ratio(1) osize(2) init(4) seed(1914) strata(4)
+
+*Clean up and add repeated time points
+use stata/rct, clear
+  
+label drop _all
+gen pid = _n 
+replace trt=trt-1
+label def trt 0 &quot;Placebo&quot; 1 &quot;Active&quot;
+label val trt trt
+rename StratID site
+drop block bsize Seq*
+order pid site trt
+sort pid
+expand 4
+sort pid
+by pid: gen time=_n-1
+
+*Simulate the normaly distributed continuous endpoints
+*Generate the random intercept and residual
+
+gen incept0 = rnormal(0,1) if time == 0
+by pid: egen incept = max(incept0)
+drop incept0
+
+gen covar0 = round(rnormal(6,2),0.1) if time == 0
+by pid: egen covar = max(covar0)
+drop covar0
+
+gen resid = rnormal(0,1)
+
+*Set the mean by time and treatment
+
+generate mean = cond(trt==0 &amp; time==0, 4, cond(trt==0 &amp; time==1, 5.5, cond(trt==0 &amp; time==2, 7.2, cond(trt==0 &amp; time==3, 8, cond(trt==1 &amp; time==0, 4, cond(trt==1 &amp; time==1, 4.4, cond(trt==1 &amp; time==2, 5, cond(trt==1 &amp; time==3, 5.5,.))))))))
+
+*Set the mean by site and baseline covariate
+
+gen site_mean =  site/2 - 1.25
+
+*Generate the outcome
+
+gen contout = 10 + incept + mean + site_mean + covar + resid
+replace contout = round(contout,0.1)
+gen baseline0 = contout if time == 0
+by pid: egen contbl = max(baseline0)
+drop baseline0
+
+*Simulate the categorical outcome by latent variable
+
+gen catout = -10 + incept + mean + site_mean + covar + rlogistic() &gt; 0
+label def  catout 0 &quot;Negative&quot; 1 &quot;Positive&quot;
+label val catout catout
+
+*Remove all observations with a positive categorical outcome at baseline to simulate a selection criteria
+
+by pid: egen catoutbl = max(cond(time==0,catout,.))
+drop if catoutbl==1
+
+*Simulate a time to event outcome with a weibull distribution
+
+gen timemean =  2 + incept + mean + site_mean + covar if time == 0
+gen timeout0 = rweibull(1.5,timemean)
+gen censor0 = rnormal(12,1) if time == 0
+gen timecens0 = timeout &lt; censor0 if time == 0
+replace timeout = censor0 if timecens0 == 0
+by pid: egen timeout = max(timeout0)
+by pid: egen timecens = max(timecens0)
+replace timeout = round(timeout,0.1)
+label def cens 0 &quot;Censored&quot; 1 &quot;Event&quot;
+label val timecens cens
+
+*Clean up and name variables
+
+drop incept  mean resid  site_mean timemean - timecens0 catoutbl
+order pid - covar contbl
+label var pid &quot;Patient identifier&quot;
+label var site &quot;Site&quot;
+label var trt &quot;Treatment&quot;
+label var time &quot;Time point2&quot;
+label var covar &quot;Continuous baseline covariate&quot;
+label var contbl &quot;Baseline value continuous outcome&quot;
+label var contout &quot;Continuous outcome&quot;
+label var catout &quot;Categorical outcome&quot;
+label var timeout &quot;Time to event outcome&quot;
+label var timecens &quot;Censoring/event identifier&quot;
+
+save stata/rct, replace</code></pre>
+<p>The resulting dataset then looks like this (without the Stata variable names and labels):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+pid
+</th>
+<th style="text-align:left;">
+site
+</th>
+<th style="text-align:left;">
+trt
+</th>
+<th style="text-align:left;">
+time
+</th>
+<th style="text-align:right;">
+covar
+</th>
+<th style="text-align:right;">
+contbl
+</th>
+<th style="text-align:right;">
+contout
+</th>
+<th style="text-align:left;">
+catout
+</th>
+<th style="text-align:right;">
+timeout
+</th>
+<th style="text-align:right;">
+timecens
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Active
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+6.8
+</td>
+<td style="text-align:right;">
+20.2
+</td>
+<td style="text-align:right;">
+20.2
+</td>
+<td style="text-align:left;">
+Negative
+</td>
+<td style="text-align:right;">
+9.5
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Active
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+6.8
+</td>
+<td style="text-align:right;">
+20.2
+</td>
+<td style="text-align:right;">
+18.1
+</td>
+<td style="text-align:left;">
+Positive
+</td>
+<td style="text-align:right;">
+9.5
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Active
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+6.8
+</td>
+<td style="text-align:right;">
+20.2
+</td>
+<td style="text-align:right;">
+19.4
+</td>
+<td style="text-align:left;">
+Positive
+</td>
+<td style="text-align:right;">
+9.5
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Active
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+6.8
+</td>
+<td style="text-align:right;">
+20.2
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:left;">
+Positive
+</td>
+<td style="text-align:right;">
+9.5
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Placebo
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+7.9
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:left;">
+Negative
+</td>
+<td style="text-align:right;">
+4.6
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Placebo
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+7.9
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:right;">
+20.9
+</td>
+<td style="text-align:left;">
+Positive
+</td>
+<td style="text-align:right;">
+4.6
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Placebo
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+7.9
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:right;">
+23.5
+</td>
+<td style="text-align:left;">
+Positive
+</td>
+<td style="text-align:right;">
+4.6
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Placebo
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+7.9
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:right;">
+23.8
+</td>
+<td style="text-align:left;">
+Positive
+</td>
+<td style="text-align:right;">
+4.6
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<p>The data can be visualised like this:</p>
+<pre class="sourceCode r"><code class="sourceCode r">rct <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(trt,time) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mean=</span><span class="kw">mean</span>(contout),<span class="dt">sd=</span><span class="kw">sd</span>(contout)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>time, <span class="dt">y=</span>mean, <span class="dt">color=</span>trt,<span class="dt">group=</span>trt,<span class="dt">ymin =</span> mean<span class="op">-</span>sd, <span class="dt">ymax=</span>mean<span class="op">+</span>sd)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="dt">width=</span><span class="fl">0.2</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_classic</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Mean outcome with standard deviations&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)</code></pre>
+<p><img src="rct-cookbook_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="continuous-endpoints.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
