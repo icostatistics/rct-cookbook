@@ -146,7 +146,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html"><i class="fa fa-check"></i><b>4</b> Dichotomous endpoints</a><ul>
-<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a></li>
+<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#stata-code-1"><i class="fa fa-check"></i><b>4.1.1</b> Stata code</a></li>
+<li class="chapter" data-level="4.1.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#r-code-1"><i class="fa fa-check"></i><b>4.1.2</b> R code</a></li>
+<li class="chapter" data-level="4.1.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-1"><i class="fa fa-check"></i><b>4.1.3</b> Reporting</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
 <li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
@@ -175,8 +179,193 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 4</span> Dichotomous endpoints</h1>
 <div id="single-follow-up-1" class="section level2">
 <h2><span class="header-section-number">4.1</span> Single follow-up</h2>
-<p>When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs <a href="http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf">Guideline on adjustment for baseline covariates in clinical trials</a> we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. In our simulated data set this means to adjust for site and the “covar”&quot; variable. In this example we define that the primary outcome is the continuous outcome at time 3.</p>
+<p>For a single follow-up assessment of a dichotomous endpoint, the main method I use is a standard logistic regression. Then we can adjust for stratification factors in the randomisation in addition to other pre-specified covariates, both categorical and continuous. In the simulated example, we define that the primary outcome is the dichotomous categorical outcome at time 3. Note that usually the baseline status of all patients are negative for the outcome, so adjusting for baseline is not necessary.</p>
+<div id="stata-code-1" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Stata code</h3>
+<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
+tabulate catout trt
+logistic catout i.trt i.site covar  if time==3, coef</code></pre>
+<pre><code>## 
+## . use &quot;stata/rct&quot;, cle(all strata combined)
+## 
+## . tabulate catout trt
+## 
+## Categorica |       Treatment
+##  l outcome |   Placebo     Active |     Total
+## -----------+----------------------+----------
+##   Negative |        95        131 |       226 
+##   Positive |       105         61 |       166 
+## -----------+----------------------+----------
+##      Total |       200        192 |       392 
+## 
+## . logistic catout i.trt i.site covar  if time==3, coef
+## 
+## Logistic regression                             Number of obs     =         98
+##                                                 LR chi2(5)        =      48.59
+##                                                 Prob &gt; chi2       =     0.0000
+## Log likelihood = -36.862204                     Pseudo R2         =     0.3973
+## 
+## ------------------------------------------------------------------------------
+##       catout |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+## -------------+----------------------------------------------------------------
+##          trt |
+##      Active  |  -2.890301   .7850252    -3.68   0.000    -4.428922   -1.351679
+##              |
+##         site |
+##           2  |   .7783404   .8580245     0.91   0.364    -.9033566    2.460037
+##           3  |   1.423791   .7786531     1.83   0.067    -.1023412    2.949923
+##           4  |   .0253234   .8082887     0.03   0.975    -1.558893     1.60954
+##              |
+##        covar |   1.001078   .2329461     4.30   0.000     .5445124    1.457644
+##        _cons |  -2.463577   .8925892    -2.76   0.006     -4.21302   -.7141344
+## ------------------------------------------------------------------------------
+## 
+## .</code></pre>
+<p>Note that the use the <code>coef</code> option to get the log odds ratio estimates.</p>
+</div>
+<div id="r-code-1" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> R code</h3>
+<pre class="sourceCode r"><code class="sourceCode r">rct &lt;-<span class="st"> </span><span class="kw">read_dta</span>(<span class="st">&quot;stata/rct.dta&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">modify_at</span>(<span class="kw">c</span>(<span class="st">&quot;trt&quot;</span>,<span class="st">&quot;catout&quot;</span>), haven<span class="op">::</span>as_factor, <span class="dt">levels =</span> <span class="st">&quot;labels&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">modify_at</span>(<span class="kw">c</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;time&quot;</span>), haven<span class="op">::</span>as_factor)
+rct <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(time<span class="op">==</span><span class="dv">3</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">glm</span>(catout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar , <span class="dt">data=</span>., <span class="dt">family =</span> binomial) <span class="op">%&gt;%</span>
+<span class="st">  </span>summary</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = catout ~ trt + site + covar, family = binomial, 
+##     data = .)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9659  -0.5335   0.1943   0.5095   2.8873  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -2.46358    0.89259  -2.760 0.005780 ** 
+## trtActive   -2.89030    0.78502  -3.682 0.000232 ***
+## site2        0.77834    0.85802   0.907 0.364337    
+## site3        1.42379    0.77865   1.829 0.067470 .  
+## site4        0.02532    0.80829   0.031 0.975007    
+## covar        1.00108    0.23295   4.297 1.73e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 122.318  on 97  degrees of freedom
+## Residual deviance:  73.724  on 92  degrees of freedom
+## AIC: 85.724
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<p>Not surprisingly, the estimates are identical.</p>
+</div>
+<div id="reporting-1" class="section level3">
+<h3><span class="header-section-number">4.1.3</span> Reporting</h3>
+<p>Reporting for dichotomous endpoints is a bit tricky. The natural estimates from a logistic regression is odds and odds ratios, but these are less interpretable than risk differences or relative risk. As New England Journal of Medicine states in their Statistical Guidelines: “Odds ratios should be avoided, as they may overestimate the relative risks in many settings and be misinterpreted.” Fortunately, both Stata and R can estimate adjusted risk differences and relative risks from logistic regressions.</p>
+<div id="stata-code-2" class="section level4">
+<h4><span class="header-section-number">4.1.3.1</span> Stata code</h4>
+<p>First we compute the average prediced marginal probabilities. Basically this is done by calculating the predicted probability of a positive outcome for each patient, under both treatments, and then averaging. The standard errors are computed by the delta method.</p>
+<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
 
+quietly logistic catout i.trt i.site covar  if time==3, coef
+margins trt</code></pre>
+<pre><code>## 
+## . use &quot;stata/rct&quot;, cle(all strata combined)
+## 
+## . 
+## . quietly logistic catout i.trt i.site covar  if time==3, coef
+## 
+## . margins trt
+## 
+## Predictive margins                              Number of obs     =         98
+## Model VCE    : OIM
+## 
+## Expression   : Pr(catout), predict()
+## 
+## ------------------------------------------------------------------------------
+##              |            Delta-method
+##              |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+## -------------+----------------------------------------------------------------
+##          trt |
+##     Placebo  |   .8499905   .0387218    21.95   0.000     .7740972    .9258839
+##      Active  |   .5111833   .0533918     9.57   0.000     .4065374    .6158293
+## ------------------------------------------------------------------------------
+## 
+## .</code></pre>
+<p>The adjusted risk difference is calculated similarily.</p>
+<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
+quietly logistic catout i.trt i.site covar  if time==3, coef
+margins, dydx(trt)</code></pre>
+<pre><code>## 
+## . use &quot;stata/rct&quot;, cle(all strata combined)
+## 
+## . quietly logistic catout i.trt i.site covar  if time==3, coef
+## 
+## . margins, dydx(trt)
+## 
+## Average marginal effects                        Number of obs     =         98
+## Model VCE    : OIM
+## 
+## Expression   : Pr(catout), predict()
+## dy/dx w.r.t. : 1.trt
+## 
+## ------------------------------------------------------------------------------
+##              |            Delta-method
+##              |      dy/dx   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+## -------------+----------------------------------------------------------------
+##          trt |
+##      Active  |  -.3388072   .0661086    -5.13   0.000    -.4683777   -.2092367
+## ------------------------------------------------------------------------------
+## Note: dy/dx for factor levels is the discrete change from the base level.
+## 
+## .</code></pre>
+<p>We see that the risk difference is the difference of the estimated marginal probabilities we computed previously.</p>
+<p>The relative risk is a bit more difficult to calculate, but not much. It uses the <code>nlcom</code> method to compute non-linear combinations of estimates.</p>
+<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
+quietly logistic catout i.trt i.site covar  if time==3, coef
+quietly margins trt, post
+margins, coeflegend
+nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))</code></pre>
+<pre><code>## 
+## . use &quot;stata/rct&quot;, cle(all strata combined)
+## 
+## . quietly logistic catout i.trt i.site covar  if time==3, coef
+## 
+## . quietly margins trt, post
+## 
+## . margins, coeflegend
+## 
+## Predictive margins                              Number of obs     =         98
+## Model VCE    : OIM
+## 
+## Expression   : Pr(catout), predict()
+## 
+## ------------------------------------------------------------------------------
+##              |     Margin  Legend
+## -------------+----------------------------------------------------------------
+##          trt |
+##     Placebo  |   .8499905  _b[0bn.trt]
+##      Active  |   .5111833  _b[1.trt]
+## ------------------------------------------------------------------------------
+## 
+## . nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))
+## 
+##       ratio1:  log(_b[1.trt]/_b[0bn.trt])
+## 
+## ------------------------------------------------------------------------------
+##              |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+## -------------+----------------------------------------------------------------
+##       ratio1 |  -.5084969   .1141546    -4.45   0.000    -.7322358    -.284758
+## ------------------------------------------------------------------------------
+## 
+## .</code></pre>
+<p>The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that we use the logarithmic function for stability. To get the relative risk estimates, the results need to be exponentiated.</p>
+<p>Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits)</p>
+
+</div>
+</div>
 </div>
 </div>
             </section>
@@ -222,7 +411,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["rct-cookbook.pdf"],
 "toc": {
 "collapse": "subsection"
 }

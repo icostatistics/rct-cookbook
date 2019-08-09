@@ -18,7 +18,7 @@ For a single follow-up assessment of a dichotomous endpoint, the main method I u
 
 ### Stata code
 
-```{stata sancova1_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+```{stata slogistic1_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
 use "stata/rct", clear 
 tabulate catout trt
 logistic catout i.trt i.site covar  if time==3, coef
@@ -27,7 +27,7 @@ Note that the use the `coef` option to get the log odds ratio estimates.
  
 ### R code
 
-```{r rancova_02}
+```{r rlogistic1_03}
 rct <- read_dta("stata/rct.dta") %>% 
   modify_at(c("trt","catout"), haven::as_factor, levels = "labels") %>% 
   modify_at(c("site","time"), haven::as_factor)
@@ -36,6 +36,47 @@ rct %>%
   glm(catout ~ trt + site + covar , data=., family = binomial) %>%
   summary
 ```
+
+Not surprisingly, the estimates are identical.
+
+
+### Reporting
+Reporting for dichotomous endpoints is a bit tricky. The natural estimates from a logistic regression is odds and odds ratios, but these are less interpretable than risk differences or relative risk. As New England Journal of Medicine states in their Statistical Guidelines: "Odds ratios should be avoided, as they may overestimate the relative risks in many settings and be misinterpreted." Fortunately, both Stata and R can estimate adjusted risk differences and relative risks from logistic regressions. 
+
+#### Stata code
+First we compute the average prediced marginal probabilities. Basically this is done by calculating the predicted probability of a positive outcome for each patient, under both treatments, and then averaging. The standard errors are computed by the delta method. 
+
+```{stata slogistic2_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use "stata/rct", clear 
+
+quietly logistic catout i.trt i.site covar  if time==3, coef
+margins trt
+```
+
+The adjusted risk difference is calculated similarily.
+
+```{stata slogistic3_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use "stata/rct", clear 
+quietly logistic catout i.trt i.site covar  if time==3, coef
+margins, dydx(trt)
+```
+
+We see that the risk difference is the difference of the estimated marginal probabilities we computed previously. 
+
+The relative risk is a bit more difficult to calculate, but not much. It uses the `nlcom` method to compute non-linear combinations of estimates. 
+```{stata slogistic4_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use "stata/rct", clear 
+quietly logistic catout i.trt i.site covar  if time==3, coef
+quietly margins trt, post
+margins, coeflegend
+nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))
+```
+
+The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that we use the logarithmic function for stability. To get the relative risk estimates, the results need to be exponentiated. 
+
+Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits)
+
+
 
 
 

@@ -146,7 +146,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html"><i class="fa fa-check"></i><b>4</b> Dichotomous endpoints</a><ul>
-<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a></li>
+<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#stata-code-1"><i class="fa fa-check"></i><b>4.1.1</b> Stata code</a></li>
+<li class="chapter" data-level="4.1.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#r-code-1"><i class="fa fa-check"></i><b>4.1.2</b> R code</a></li>
+<li class="chapter" data-level="4.1.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-1"><i class="fa fa-check"></i><b>4.1.3</b> Reporting</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
 <li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
@@ -175,7 +179,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 3</span> Continuous endpoints</h1>
 <div id="single-follow-up" class="section level2">
 <h2><span class="header-section-number">3.1</span> Single follow-up</h2>
-<p>When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs <a href="http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf">Guideline on adjustment for baseline covariates in clinical trials</a> we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. In our simulated data set this means to adjust for site and the “covar”&quot; variable. In this example we define that the primary outcome is the continuous outcome at time 3.</p>
+<p>When the outcome consists of a single follow-up assessment of the continuous endpoint, the main method I use is Analysis of Covariance. According to the EMAs <a href="http://www.ema.europa.eu/docs/en_GB/document_library/Scientific_guideline/2015/03/WC500184923.pdf">Guideline on adjustment for baseline covariates in clinical trials</a> we should adjust for site in multicentre trial, any stratification factors in the randomisation in addition to pre-specified covariates with evidence of strong or moderate association between the covariate and the primary outcome measure. Usually this also means the baseline observation of the outcome. In our simulated data set this means to adjust for <code>site</code>, <code>contbl</code> and <code>covar</code> variables. In this example we define that the primary outcome is the continuous outcome at time 3.</p>
 <div id="stata-code" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> Stata code</h3>
 <pre class="stata"><code>use &quot;stata/rct&quot;, clear 
@@ -279,29 +283,6 @@ rct <span class="op">%&gt;%</span><span class="st"> </span>
 ## Multiple R-squared:  0.8166, Adjusted R-squared:  0.8046 
 ## F-statistic: 67.55 on 6 and 91 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>We see that the parameter estimates are identical.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># test1 &lt;- rct %&gt;% </span>
-<span class="co">#   filter(time==3) %&gt;%</span>
-<span class="co">#   lm(contout ~ trt + site + covar + contbl, data=.)</span>
-<span class="co"># </span>
-<span class="co"># test1 &lt;- rct %&gt;% </span>
-<span class="co">#   filter(time==3) %&gt;%</span>
-<span class="co">#   lm(contout ~ trt + site, data=.) %&gt;%</span>
-<span class="co">#   prediction(at = list(trt = c(&quot;Active&quot;, &quot;Placebo&quot;)))</span>
-<span class="co"># </span>
-<span class="co"># #tmp &lt;- car::deltaMethod(test1, &quot;Intercept + trtActive + site2 + covar + contbl&quot;)</span>
-<span class="co"># </span>
-<span class="co">#   test2 &lt;- prediction(test1,data = rct,at = list(trt = c(&quot;Active&quot;, &quot;Placebo&quot;))) %&gt;%</span>
-<span class="co">#     as_tibble %&gt;%</span>
-<span class="co">#     filter(time == 3) %&gt;%</span>
-<span class="co">#     </span>
-<span class="co">#   </span>
-<span class="co">#   test2 %&gt;%</span>
-<span class="co">#     group_by(trt) %&gt;%</span>
-<span class="co">#     summarise(mean = mean(fitted), se = median(se.fitted), n=n())</span>
-<span class="co">#   </span>
-<span class="co">#  test1 %&gt;%</span>
-<span class="co">#    ref_grid() %&gt;%</span>
-<span class="co">#   emmeans( ~ trt)</span></code></pre>
 </div>
 <div id="reporting" class="section level3">
 <h3><span class="header-section-number">3.1.3</span> Reporting</h3>
@@ -803,7 +784,7 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 ## 
 ## .</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig2.pdf&quot;</span>)</code></pre>
-<div class="figure"><span id="fig:unnamed-chunk-6"></span>
+<div class="figure"><span id="fig:unnamed-chunk-5"></span>
 <img src="stata/figures/cont_fig2.pdf" alt="Margins plot by Stata" width="85%" />
 <p class="caption">
 Figure 3.1: Margins plot by Stata
@@ -1050,7 +1031,7 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 ## 
 ## .</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig2.pdf&quot;</span>)</code></pre>
-<div class="figure"><span id="fig:unnamed-chunk-8"></span>
+<div class="figure"><span id="fig:unnamed-chunk-7"></span>
 <img src="stata/figures/cont_fig2.pdf" alt="Margins plot from Stata" width="85%" />
 <p class="caption">
 Figure 3.2: Margins plot from Stata
@@ -1238,7 +1219,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["rct-cookbook.pdf"],
 "toc": {
 "collapse": "subsection"
 }
