@@ -173,11 +173,11 @@ The problem with the results as presented both by Stata and R is that they are d
 
 ```{stata smixed3plot_02, engine.path='/usr/local/bin/stata-se', include=TRUE, cache = TRUE, , dependson = 'sim'}
 use stata/rct, clear 
-mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
+quitely mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
 
 *Compute the predictive margins by time and treatment
 
-margins time#trt
+quietly margins time#trt
 
 *Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
 
@@ -209,33 +209,20 @@ trt_margins <- rct %>%
 
 as_tibble(trt_margins)
 
-
-
-
 ```
 
-```{r}
- predict <- rct %>%
-  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
-  ref_grid() %>%
-  emmeans( ~ trt | time) %>%
-  tidy
- 
 
-
-predict %>%
-  as_tibble %>%
-  group_by(trt, time) %>%
-  summary(mean = mean)
-
-```
 
 
 
 A corresponding estimated marginal means plot can be made in R by using the emmeans package. 
 
 ```{r rmixed3plot_02}
-
+ rct %>%
+  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
+  ref_grid() %>%
+  emmeans( ~ trt | time) %>%
+  tidy
 
 rct %>%
   lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
@@ -281,9 +268,19 @@ library(boot)
  }
  
  data <- rct
- result <- boot(data = data, statistic = fpred, R = 1000, formula = contout ~ trt + time + trt*time + site + covar + (1|pid))
- result
+ result <- boot(data = data, 
+                statistic = fpred, 
+                R = 10000, 
+                formula = contout ~ trt + time + trt*time + site + covar + (1|pid),
+                parallel = "multicore",
+                ncpus = 4) %>%
+   tidy(conf.int = TRUE) 
+ 
+ result %>%
+   select(-bias) %>%
+   knitr::kable(digits = 3)
 ```
+We note that the estimates are the same as for the Stata marginal means, but that the standard errors are smaller. Thus, in this case it seems that the standard error computed using the delta method is conservative. 
 
 
 ### Model with treatment-time interaction and baseline information

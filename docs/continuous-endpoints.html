@@ -24,7 +24,7 @@
 <meta name="author" content="Inge Christoffer Olsen" />
 
 
-<meta name="date" content="2019-08-09" />
+<meta name="date" content="2019-08-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -150,6 +150,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.1.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#stata-code-1"><i class="fa fa-check"></i><b>4.1.1</b> Stata code</a></li>
 <li class="chapter" data-level="4.1.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#r-code-1"><i class="fa fa-check"></i><b>4.1.2</b> R code</a></li>
 <li class="chapter" data-level="4.1.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-1"><i class="fa fa-check"></i><b>4.1.3</b> Reporting</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#repeated-follow-up-1"><i class="fa fa-check"></i><b>4.2</b> Repeated follow-up</a></li>
+<li class="chapter" data-level="4.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#treatment-time-interaction-model"><i class="fa fa-check"></i><b>4.3</b> Treatment-time interaction model</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-2"><i class="fa fa-check"></i><b>4.3.1</b> Reporting</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
@@ -673,11 +677,11 @@ mixed contout i.trt i.time i.trt#i.time i.site covar || pid: </code></pre>
 ## trtActive:time3 -2.86283    0.26993 -10.606</code></pre>
 <p>The problem with the results as presented both by Stata and R is that they are difficult to interpret. The solution is to use predictive margins and corresponding marginal plots. First we plot the predictive margins by treatment:</p>
 <pre class="stata"><code>use stata/rct, clear 
-mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
+quitely mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
 
 *Compute the predictive margins by time and treatment
 
-margins time#trt
+quietly margins time#trt
 
 *Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
 
@@ -686,87 +690,17 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 <pre><code>## 
 ## . use stata/rct, cle(all strata combined)
 ## 
-## . mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
-## 
-## Performing EM optimization: 
-## 
-## Performing gradient-based optimization: 
-## 
-## Iteration 0:   log likelihood = -603.47362  
-## Iteration 1:   log likelihood = -603.47362  
-## 
-## Computing standard errors:
-## 
-## Mixed-effects ML regression                     Number of obs     =        392
-## Group variable: pid                             Number of groups  =         98
-## 
-##                                                 Obs per group:
-##                                                               min =          4
-##                                                               avg =        4.0
-##                                                               max =          4
-## 
-##                                                 Wald chi2(11)     =     943.21
-## Log likelihood = -603.47362                     Prob &gt; chi2       =     0.0000
-## 
-## ------------------------------------------------------------------------------
-##      contout |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##          trt |
-##      Active  |   .1464841   .2563632     0.57   0.568    -.3559785    .6489468
-##              |
-##         time |
-##           1  |      1.516   .1889091     8.03   0.000     1.145745    1.886255
-##           2  |      3.174   .1889091    16.80   0.000     2.803745    3.544255
-##           3  |      4.092   .1889091    21.66   0.000     3.721745    4.462255
-##              |
-##     trt#time |
-##    Active#1  |  -1.186833   .2699264    -4.40   0.000    -1.715879   -.6577872
-##    Active#2  |   -2.25525   .2699264    -8.36   0.000    -2.784296   -1.726204
-##    Active#3  |  -2.862833   .2699264   -10.61   0.000    -3.391879   -2.333787
-##              |
-##         site |
-##           2  |   .6526838   .2761649     2.36   0.018     .1114106    1.193957
-##           3  |   .5751011   .2484525     2.31   0.021     .0881431    1.062059
-##           4  |   .9060635   .2962487     3.06   0.002     .3254267      1.4867
-##              |
-##        covar |   .8633823   .0519317    16.63   0.000      .761598    .9651666
-##        _cons |   13.77991   .3173239    43.43   0.000     13.15796    14.40185
-## ------------------------------------------------------------------------------
-## 
-## ------------------------------------------------------------------------------
-##   Random-effects Parameters  |   Estimate   Std. Err.     [95% Conf. Interval]
-## -----------------------------+------------------------------------------------
-## pid: Identity                |
-##                   var(_cons) |   .7003448   .1331889      .4824292    1.016694
-## -----------------------------+------------------------------------------------
-##                var(Residual) |   .8921667   .0735847       .758997    1.048702
-## ------------------------------------------------------------------------------
-## LR test vs. linear model: chibar2(01) = 87.90         Prob &gt;= chibar2 = 0.0000
+## . quitely mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
+## command quitely is unrecognized
+## r(199);
 ## 
 ## . 
 ## . *Compute the predictive margins by time and treatment
 ## 
 ## . 
-## . margins time#trt
-## 
-## Predictive margins                              Number of obs     =        392
-## 
-## Expression   : Linear prediction, fixed portion, predict()
-## 
-## ------------------------------------------------------------------------------
-##              |            Delta-method
-##              |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##     time#trt |
-##   0#Placebo  |   18.35274   .1789325   102.57   0.000     18.00204    18.70344
-##    0#Active  |   18.49923    .182642   101.29   0.000     18.14125     18.8572
-##   1#Placebo  |   19.86874   .1789325   111.04   0.000     19.51804    20.21944
-##    1#Active  |   18.82839    .182642   103.09   0.000     18.47042    19.18637
-##   2#Placebo  |   21.52674   .1789325   120.31   0.000     21.17604    21.87744
-##    2#Active  |   19.41798    .182642   106.32   0.000        19.06    19.77595
-##   3#Placebo  |   22.44474   .1789325   125.44   0.000     22.09404    22.79544
-##    3#Active  |   19.72839    .182642   108.02   0.000     19.37042    20.08637
-## ------------------------------------------------------------------------------
+## . quietly margins time#trt
+## last estimates not found
+## r(301);
 ## 
 ## . 
 ## . *Plot the predictive margins. Note that the arguments after the comma is just
@@ -776,11 +710,12 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 ## . marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(c
 ## &gt; olor(white)) ytitle(&quot;Marginal estimates&quot;) ylabel(,nogrid)  legend(region(colo
 ## &gt; r(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title(&quot;&quot;)
-## 
-##   Variables that uniquely identify margins: time trt
+## previous command was not margins
+## r(301);
 ## 
 ## . graph export stata/figures/cont_fig2.pdf, replace 
-## (file stata/figures/cont_fig2.pdf written in PDF format)
+## no Graph window open
+## r(601);
 ## 
 ## .</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig2.pdf&quot;</span>)</code></pre>
@@ -843,33 +778,23 @@ margins time, dydx(trt)</code></pre>
 ## 2 trtActive 1     -1.04  0.256  -4.06  4.95e- 5 -1.54  -0.538
 ## 3 trtActive 2     -2.11  0.256  -8.23  1.94e-16 -2.61  -1.61 
 ## 4 trtActive 3     -2.72  0.256 -10.6   3.12e-26 -3.22  -2.21</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"> predict &lt;-<span class="st"> </span>rct <span class="op">%&gt;%</span>
+<p>A corresponding estimated marginal means plot can be made in R by using the emmeans package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"> rct <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">lmer</span>(contout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>time <span class="op">+</span><span class="st"> </span>trt<span class="op">*</span>time <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>pid),<span class="dt">data=</span>., <span class="dt">REML=</span><span class="ot">FALSE</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ref_grid</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">emmeans</span>( <span class="op">~</span><span class="st"> </span>trt <span class="op">|</span><span class="st"> </span>time) <span class="op">%&gt;%</span>
-<span class="st">  </span>tidy
- 
-
-
-predict <span class="op">%&gt;%</span>
-<span class="st">  </span>as_tibble <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">group_by</span>(trt, time) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summary</span>(<span class="dt">mean =</span> mean)</code></pre>
-<pre><code>##       trt    time     estimate       std.error            df       
-##  Placebo:4   0:2   Min.   :18.42   Min.   :0.1852   Min.   :255.9  
-##  Active :4   1:2   1st Qu.:18.82   1st Qu.:0.1852   1st Qu.:255.9  
-##              2:2   Median :19.64   Median :0.1870   Median :256.2  
-##              3:2   Mean   :19.90   Mean   :0.1870   Mean   :256.2  
-##                    3rd Qu.:20.35   3rd Qu.:0.1888   3rd Qu.:256.4  
-##                    Max.   :22.51   Max.   :0.1888   Max.   :256.4  
-##     conf.low       conf.high    
-##  Min.   :18.06   Min.   :18.79  
-##  1st Qu.:18.44   1st Qu.:19.19  
-##  Median :19.27   Median :20.01  
-##  Mean   :19.53   Mean   :20.27  
-##  3rd Qu.:19.99   3rd Qu.:20.72  
-##  Max.   :22.15   Max.   :22.88</code></pre>
-<p>A corresponding estimated marginal means plot can be made in R by using the emmeans package.</p>
+<span class="st">  </span>tidy</code></pre>
+<pre><code>## # A tibble: 8 x 7
+##   trt     time  estimate std.error    df conf.low conf.high
+##   &lt;fct&gt;   &lt;fct&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Placebo 0         18.4     0.185  256.     18.1      18.8
+## 2 Active  0         18.6     0.189  256.     18.2      18.9
+## 3 Placebo 1         19.9     0.185  256.     19.6      20.3
+## 4 Active  1         18.9     0.189  256.     18.5      19.3
+## 5 Placebo 2         21.6     0.185  256.     21.2      22.0
+## 6 Active  2         19.5     0.189  256.     19.1      19.9
+## 7 Placebo 3         22.5     0.185  256.     22.1      22.9
+## 8 Active  3         19.8     0.189  256.     19.4      20.2</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">rct <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">lmer</span>(contout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>time <span class="op">+</span><span class="st"> </span>trt<span class="op">*</span>time <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>pid),<span class="dt">data=</span>., <span class="dt">REML=</span><span class="ot">FALSE</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ref_grid</span>() <span class="op">%&gt;%</span>
@@ -906,27 +831,177 @@ predict <span class="op">%&gt;%</span>
  }
  
  data &lt;-<span class="st"> </span>rct
- result &lt;-<span class="st"> </span><span class="kw">boot</span>(<span class="dt">data =</span> data, <span class="dt">statistic =</span> fpred, <span class="dt">R =</span> <span class="dv">1000</span>, <span class="dt">formula =</span> contout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>time <span class="op">+</span><span class="st"> </span>trt<span class="op">*</span>time <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>pid))
- result</code></pre>
-<pre><code>## 
-## ORDINARY NONPARAMETRIC BOOTSTRAP
-## 
-## 
-## Call:
-## boot(data = data, statistic = fpred, R = 1000, formula = contout ~ 
-##     trt + time + trt * time + site + covar + (1 | pid))
-## 
-## 
-## Bootstrap Statistics :
-##     original       bias    std. error
-## t1* 18.49923 -0.001822048   0.1646038
-## t2* 18.82839 -0.000841232   0.1514823
-## t3* 19.41798 -0.001416546   0.1896352
-## t4* 19.72839  0.006541729   0.1751623
-## t5* 18.35274 -0.005006401   0.1944622
-## t6* 19.86874  0.010428215   0.1704236
-## t7* 21.52674  0.012798606   0.1781375
-## t8* 22.44474  0.001340704   0.1567325</code></pre>
+ result &lt;-<span class="st"> </span><span class="kw">boot</span>(<span class="dt">data =</span> data, 
+                <span class="dt">statistic =</span> fpred, 
+                <span class="dt">R =</span> <span class="dv">10000</span>, 
+                <span class="dt">formula =</span> contout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>time <span class="op">+</span><span class="st"> </span>trt<span class="op">*</span>time <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>pid),
+                <span class="dt">parallel =</span> <span class="st">&quot;multicore&quot;</span>,
+                <span class="dt">ncpus =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">tidy</span>(<span class="dt">conf.int =</span> <span class="ot">TRUE</span>) 
+ 
+ result <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">select</span>(<span class="op">-</span>bias) <span class="op">%&gt;%</span>
+<span class="st">   </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+statistic
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Active0
+</td>
+<td style="text-align:right;">
+18.499
+</td>
+<td style="text-align:right;">
+0.161
+</td>
+<td style="text-align:right;">
+18.186
+</td>
+<td style="text-align:right;">
+18.810
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Active1
+</td>
+<td style="text-align:right;">
+18.828
+</td>
+<td style="text-align:right;">
+0.153
+</td>
+<td style="text-align:right;">
+18.524
+</td>
+<td style="text-align:right;">
+19.121
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Active2
+</td>
+<td style="text-align:right;">
+19.418
+</td>
+<td style="text-align:right;">
+0.189
+</td>
+<td style="text-align:right;">
+19.040
+</td>
+<td style="text-align:right;">
+19.783
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Active3
+</td>
+<td style="text-align:right;">
+19.728
+</td>
+<td style="text-align:right;">
+0.169
+</td>
+<td style="text-align:right;">
+19.396
+</td>
+<td style="text-align:right;">
+20.048
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Placebo0
+</td>
+<td style="text-align:right;">
+18.353
+</td>
+<td style="text-align:right;">
+0.193
+</td>
+<td style="text-align:right;">
+17.966
+</td>
+<td style="text-align:right;">
+18.727
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Placebo1
+</td>
+<td style="text-align:right;">
+19.869
+</td>
+<td style="text-align:right;">
+0.168
+</td>
+<td style="text-align:right;">
+19.542
+</td>
+<td style="text-align:right;">
+20.201
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Placebo2
+</td>
+<td style="text-align:right;">
+21.527
+</td>
+<td style="text-align:right;">
+0.182
+</td>
+<td style="text-align:right;">
+21.172
+</td>
+<td style="text-align:right;">
+21.889
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Placebo3
+</td>
+<td style="text-align:right;">
+22.445
+</td>
+<td style="text-align:right;">
+0.151
+</td>
+<td style="text-align:right;">
+22.142
+</td>
+<td style="text-align:right;">
+22.741
+</td>
+</tr>
+</tbody>
+</table>
+<p>We note that the estimates are the same as for the Stata marginal means, but that the standard errors are smaller. Thus, in this case it seems that the standard error computed using the delta method is conservative.</p>
 </div>
 <div id="model-with-treatment-time-interaction-and-baseline-information" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> Model with treatment-time interaction and baseline information</h3>
@@ -1031,7 +1106,7 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 ## 
 ## .</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig2.pdf&quot;</span>)</code></pre>
-<div class="figure"><span id="fig:unnamed-chunk-7"></span>
+<div class="figure"><span id="fig:unnamed-chunk-6"></span>
 <img src="stata/figures/cont_fig2.pdf" alt="Margins plot from Stata" width="85%" />
 <p class="caption">
 Figure 3.2: Margins plot from Stata

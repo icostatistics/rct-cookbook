@@ -10,6 +10,8 @@ library(purrr)
 library(lme4)
 library(margins)
 library(emmeans)
+library(boot)
+library(ggformula)
 ```
 
 ## Single follow-up
@@ -20,7 +22,7 @@ For a single follow-up assessment of a dichotomous endpoint, the main method I u
 
 ```{stata slogistic1_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
 use "stata/rct", clear 
-tabulate catout trt
+tabulate catout trt if time == 3, column
 logistic catout i.trt i.site covar  if time==3, coef
 ```
 Note that the use the `coef` option to get the log odds ratio estimates. 
@@ -48,7 +50,6 @@ First we compute the average prediced marginal probabilities. Basically this is 
 
 ```{stata slogistic2_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
 use "stata/rct", clear 
-
 quietly logistic catout i.trt i.site covar  if time==3, coef
 margins trt
 ```
@@ -72,12 +73,209 @@ margins, coeflegend
 nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))
 ```
 
-The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that we use the logarithmic function for stability. To get the relative risk estimates, the results need to be exponentiated. 
+The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that we use the logarithmic function for stability. To get the relative risk estimates, the results need to be exponentiated. Note that I do not know the properties of this estimator, and it might be clever to check the estimates using bootstrap.
 
-Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits)
+Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits).
+
+#### R code
+
+The average predicted marginal probabilities are not easily computed in R. One option is to use the estimated marginal means computed using the `emmeans`-package:
+
+```{r rlogistic2_3}
+rct %>% 
+  filter(time == 3) %>%
+  glm(catout ~ trt + site + covar , data=., family = binomial) %>%
+  emmeans("trt", type = "response")
+  
+```
+We notice that the estimates are quite different from the average prediced marginal probabilities. The problem also is that the `emmeans`-package does not present pairwise comparisons on the probability scale. 
+
+Another option is to bootstrap the predicted marginal predicitons:
+
+```{r rlogistic3boot, cache = TRUE}
+library(boot)
+
+ fpred <- function(formula, data, indices){
+   d <- data[indices,]
+   fit <- glm(formula, data = d, family = binomial)
+   pred <- prediction(fit,data = d, at = list(trt = c("Active", "Placebo"))) %>%
+     as_tibble %>%
+     group_by(trt) %>%
+     summarise(mean = mean(fitted)) %>%
+     ungroup() %>%
+     mutate(name = paste0(trt)) %>%
+     select(name,mean) %>%
+     spread(name,mean) %>%
+     as_vector
+   return(pred)
+ }
+ 
+ data <- filter(rct, time == 3)
+ result <- boot(data = data, 
+                statistic = fpred, 
+                R = 10000, 
+                formula = catout ~ trt + site + covar,
+                parallel = "multicore",
+                ncpus = 4) %>%
+   tidy(conf.int = TRUE) 
+ 
+ result %>%
+   select(-bias) %>%
+   knitr::kable(digits = 3)
+```
+We see that the estimates are identical to the Stata estimates, although the standard errors and confidence limits are a bit different. 
 
 
-testing
+The estimated marginal risk difference in R is computed using the `margins`-package. 
+
+```{r rlogistic3_03}
+ rlogistic <- rct %>% 
+  filter(time==3) %>%
+  glm(catout ~ trt + site + covar , data=., family = binomial)
+
+
+  margins(model = rlogistic, variables = "trt", data = filter(rct,time==3), vce = "delta") %>%
+  summary()
+```
+
+We see that the estimates are identical to the Stata estimates. 
+
+Risk ratios are definitely not that easily computed in R, probably best done using bootstrapping:
+
+```{r rlogistic4boot, cache = TRUE}
+library(boot)
+
+
+ fpred <- function(formula, data, indices){
+   d <- data[indices,]
+   fit <- glm(formula, data = d, family = binomial)
+   pred <- prediction(fit,data = d, at = list(trt = c("Active", "Placebo"))) %>%
+     as_tibble %>%
+     group_by(trt) %>%
+     summarise(mean = mean(fitted)) %>%
+     ungroup() %>%
+     mutate(name = paste0(trt)) %>%
+     select(name,mean) %>%
+     spread(name,mean) %>%
+     as_vector
+   return(pred["Active"]/pred["Placebo"])
+ }
+ 
+ data <- filter(rct, time == 3)
+ result <- boot(data = data, 
+                statistic = fpred, 
+                R = 10000, 
+                formula = catout ~ trt + site + covar,
+                parallel = "multicore",
+                ncpus = 4) %>%
+   tidy(conf.int = TRUE) 
+ 
+ result %>%
+   select(-bias) %>%
+   knitr::kable(digits = 3)
+```
+
+## Repeated follow-up
+
+When there are repeated dichotomous endpoints, there are usually two methods available, either the generalized estimating equations method or the generalized mixed model method. I prefer the mixed model approach because it has better missing data properties, and I like that the parameter estimates are interpretable conditional on the subject. In my mind it is more aligned to a causal interpretation. I will show how to do the mixed logistic regression model. We skip the simple model and go straight to a model with treatment-time interaction. Note that usually a dichotomous endpoint all have the same value at baseline (all subjects are in the same state), thus we rarely include the baseline. The model is a simple random intercept model, but it could of course also be expanded to a random intercept and slope model. 
+
+## Treatment-time interaction model
+
+In Stata, the model is coded as:
+
+```{stata sglmm1_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use "stata/rct", clear 
+bysort time: tabulate catout trt, column
+melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pid: 
+```
+
+In R, this model is coded as:
+```{r rglmm1_3}
+rct %>%
+  filter(time != 0) %>%
+  glmer(catout ~ trt + time + trt*time + site + covar + (1|pid), 
+        data = ., 
+        family = binomial, 
+        nAGQ = 7)
+```
+
+
+### Reporting
+Plotting i Stata
+
+```{stata sglmm1plot_03, engine.path='/usr/local/bin/stata-se', include=TRUE, cache = TRUE, , dependson = 'sim'}
+use stata/rct, clear 
+quietly melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pid: 
+
+*Compute the predictive margins by time and treatment
+
+quietly margins time#trt
+
+*Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
+
+marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(color(white)) ytitle("Marginal estimates") ylabel(,nogrid)  legend(region(color(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title("")
+graph export stata/figures/cat_fig1.pdf, replace 
+```
+
+```{r}
+knitr::include_graphics("stata/figures/cat_fig1.pdf")
+```
+
+
+Plotting in R
+
+```{r rglmm2boot_03, cache = TRUE}
+ fpred <- function(formula, data, indices){
+   d <- data[indices,]
+   fit <- glmer(formula, data = d, family = binomial)
+   pred <- prediction(fit,
+                      data = d, 
+                      at = list(trt = c("Active", "Placebo"), time = c("1", "2", "3"))) %>%
+     as_tibble %>%
+     group_by(trt, time) %>%
+     summarise(mean = mean(fitted)) %>%
+     ungroup() %>%
+     mutate(name = paste0(trt, "/", time)) %>%
+     select(name,mean) %>%
+     spread(name,mean) %>%
+     as_vector
+  return(pred)
+ }
+ 
+ data <- filter(rct, time != 0 )
+ result <- boot(data = data, 
+                statistic = fpred, 
+                R = 2000, 
+                formula = catout ~ trt + time + trt*time + site + covar + (1|pid),
+                parallel = "multicore",
+                ncpus = 4) %>%
+   tidy(conf.int = TRUE) 
+ 
+ result %>%
+   select(-bias) %>%
+   knitr::kable(digits = 3)
+```
+
+```{r}
+result %>%
+  separate(term, into = c("trt", "time")) %>%
+  mutate_at(c("trt","time"), factor) %>%
+  gf_line(statistic ~ time, color = ~trt, group = ~trt, 
+              position = position_dodge(0.04)) %>%
+  gf_point(position = position_dodge(0.04)) %>%
+  gf_errorbar(conf.low + conf.high ~ time, color = ~ trt, 
+              width = .1, 
+              position = position_dodge(0.04)) %>%
+  gf_labs(x = "Time", 
+          y = "Probability", 
+          color = "Treatment") %>%
+  gf_theme(theme_classic(), legend.position = c(0.1, 0.9)) %>%
+  gf_refine(scale_colour_brewer(palette = "Set1", name = "Treatment")) %>%
+  gf_lims(y = c(0,1))
+  
+```
+
+
 
 
 
