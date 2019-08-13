@@ -13,7 +13,7 @@
   
   
   <meta property="og:description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
-  <meta name="github-repo" content="rstudio/bookdown-demo" />
+  <meta name="github-repo" content="icostatistics/rct-cookbook" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 3 Continuous endpoints | Analyzing RCTs: A Cookbook" />
@@ -156,11 +156,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-2"><i class="fa fa-check"></i><b>4.3.1</b> Reporting</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
-<li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
-<li class="chapter" data-level="5.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>5.2</b> Example two</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
+<li class="chapter" data-level="5" data-path="time-to-event-analyses.html"><a href="time-to-event-analyses.html"><i class="fa fa-check"></i><b>5</b> Time to event analyses</a></li>
+<li class="chapter" data-level="6" data-path="sample-size-calculations.html"><a href="sample-size-calculations.html"><i class="fa fa-check"></i><b>6</b> Sample size calculations</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
@@ -462,7 +459,7 @@ mixed contout i.trt i.site i.time covar || pid: </code></pre>
 ## time3        2.68980    0.16213  16.590
 ## covar        0.86338    0.05193  16.625</code></pre>
 <p>Note that we need to specify “REML=FALSE” to produce Maximum Likelihood estimates to be consistent with the Stata estimates.</p>
-<p>This is clear not a good model since it assumes that the treatment effect is the same at all timepoints (including baseline). Since we should assume no treatment difference at baseline, the model is clearly wrong. We see this when we plot the model estimates through the “margins” and “marginsplot” procedures in Stata, and the “margins”-package in R. The “margins”-package is a port from Stata.</p>
+<p>This is clearly not a good model since it assumes that the treatment effect is the same at all timepoints (including baseline). Since we should assume no treatment difference at baseline, the model is clearly wrong. We see this when we plot the model estimates through the “margins” and “marginsplot” procedures in Stata, and the “margins”-package in R. The “margins”-package is a port from Stata.</p>
 <!-- Note that the Stata offers the best way to present the marginal estimates through the 'margins' and 'marginsplt' procedures. I have not been able to find R packages that integrates this in a similar consistent way, although the 'margins' R package delivers some of the functionality.   -->
 <pre class="stata"><code>use stata/rct, clear 
 mixed contout i.trt i.site i.time covar || pid: 
@@ -571,6 +568,13 @@ graph export stata/figures/cont_fig1.pdf, replace </code></pre>
 ## 
 ## .</code></pre>
 <!-- ![Simple mixed model marginal estimates](stata/figures/cont_fig1.pdf) -->
+<pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig1.pdf&quot;</span>)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-4"></span>
+<img src="stata/figures/cont_fig1.pdf" alt="Simple mixed model marginal plot from Stata" width="85%" />
+<p class="caption">
+Figure 3.1: Simple mixed model marginal plot from Stata
+</p>
+</div>
 <p>We will show how to code this in R below. The code is similar.</p>
 </div>
 <div id="model-with-treatment-time-interaction" class="section level3">
@@ -677,11 +681,11 @@ mixed contout i.trt i.time i.trt#i.time i.site covar || pid: </code></pre>
 ## trtActive:time3 -2.86283    0.26993 -10.606</code></pre>
 <p>The problem with the results as presented both by Stata and R is that they are difficult to interpret. The solution is to use predictive margins and corresponding marginal plots. First we plot the predictive margins by treatment:</p>
 <pre class="stata"><code>use stata/rct, clear 
-quitely mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
+quietly mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
 
 *Compute the predictive margins by time and treatment
 
-quietly margins time#trt
+ margins time#trt
 
 *Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
 
@@ -690,17 +694,32 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 <pre><code>## 
 ## . use stata/rct, cle(all strata combined)
 ## 
-## . quitely mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
-## command quitely is unrecognized
-## r(199);
+## . quietly mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
 ## 
 ## . 
 ## . *Compute the predictive margins by time and treatment
 ## 
 ## . 
-## . quietly margins time#trt
-## last estimates not found
-## r(301);
+## .  margins time#trt
+## 
+## Predictive margins                              Number of obs     =        392
+## 
+## Expression   : Linear prediction, fixed portion, predict()
+## 
+## ------------------------------------------------------------------------------
+##              |            Delta-method
+##              |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+## -------------+----------------------------------------------------------------
+##     time#trt |
+##   0#Placebo  |   18.35274   .1789325   102.57   0.000     18.00204    18.70344
+##    0#Active  |   18.49923    .182642   101.29   0.000     18.14125     18.8572
+##   1#Placebo  |   19.86874   .1789325   111.04   0.000     19.51804    20.21944
+##    1#Active  |   18.82839    .182642   103.09   0.000     18.47042    19.18637
+##   2#Placebo  |   21.52674   .1789325   120.31   0.000     21.17604    21.87744
+##    2#Active  |   19.41798    .182642   106.32   0.000        19.06    19.77595
+##   3#Placebo  |   22.44474   .1789325   125.44   0.000     22.09404    22.79544
+##    3#Active  |   19.72839    .182642   108.02   0.000     19.37042    20.08637
+## ------------------------------------------------------------------------------
 ## 
 ## . 
 ## . *Plot the predictive margins. Note that the arguments after the comma is just
@@ -710,19 +729,18 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 ## . marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(c
 ## &gt; olor(white)) ytitle(&quot;Marginal estimates&quot;) ylabel(,nogrid)  legend(region(colo
 ## &gt; r(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title(&quot;&quot;)
-## previous command was not margins
-## r(301);
+## 
+##   Variables that uniquely identify margins: time trt
 ## 
 ## . graph export stata/figures/cont_fig2.pdf, replace 
-## no Graph window open
-## r(601);
+## (file stata/figures/cont_fig2.pdf written in PDF format)
 ## 
 ## .</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig2.pdf&quot;</span>)</code></pre>
 <div class="figure"><span id="fig:unnamed-chunk-5"></span>
 <img src="stata/figures/cont_fig2.pdf" alt="Margins plot by Stata" width="85%" />
 <p class="caption">
-Figure 3.1: Margins plot by Stata
+Figure 3.2: Margins plot by Stata
 </p>
 </div>
 <p>From this we can estimate the treatment difference at the different timepoints:</p>
@@ -1109,7 +1127,7 @@ graph export stata/figures/cont_fig2.pdf, replace </code></pre>
 <div class="figure"><span id="fig:unnamed-chunk-6"></span>
 <img src="stata/figures/cont_fig2.pdf" alt="Margins plot from Stata" width="85%" />
 <p class="caption">
-Figure 3.2: Margins plot from Stata
+Figure 3.3: Margins plot from Stata
 </p>
 </div>
 <p>The estimates of the treatment differences at the different timepoints is then given by:</p>

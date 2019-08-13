@@ -122,7 +122,7 @@ rct %>%
 ```
 Note that we need to specify "REML=FALSE" to produce Maximum Likelihood estimates to be consistent with the Stata estimates. 
 
-This is clear not a good model since it assumes that the treatment effect is the same at all timepoints (including baseline). Since we should assume no treatment difference at baseline, the model is clearly wrong. We see this when we plot the model estimates through the "margins" and "marginsplot" procedures in Stata, and the "margins"-package in R. The "margins"-package is a port from Stata.  
+This is clearly not a good model since it assumes that the treatment effect is the same at all timepoints (including baseline). Since we should assume no treatment difference at baseline, the model is clearly wrong. We see this when we plot the model estimates through the "margins" and "marginsplot" procedures in Stata, and the "margins"-package in R. The "margins"-package is a port from Stata.  
 
 <!-- Note that the Stata offers the best way to present the marginal estimates through the 'margins' and 'marginsplt' procedures. I have not been able to find R packages that integrates this in a similar consistent way, although the 'margins' R package delivers some of the functionality.   -->
 
@@ -142,7 +142,7 @@ graph export stata/figures/cont_fig1.pdf, replace
 
 <!-- ![Simple mixed model marginal estimates](stata/figures/cont_fig1.pdf) -->
 
-```{r, out.width="85%", fig.cap="Simple mixed model marginal plot from Stata", results = TRUE, include =  FALSE}
+```{r, out.width="85%", fig.cap="Simple mixed model marginal plot from Stata"}
 knitr::include_graphics("stata/figures/cont_fig1.pdf")
 ```
 
@@ -173,11 +173,11 @@ The problem with the results as presented both by Stata and R is that they are d
 
 ```{stata smixed3plot_02, engine.path='/usr/local/bin/stata-se', include=TRUE, cache = TRUE, , dependson = 'sim'}
 use stata/rct, clear 
-quitely mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
+quietly mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid: 
 
 *Compute the predictive margins by time and treatment
 
-quietly margins time#trt
+ margins time#trt
 
 *Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
 

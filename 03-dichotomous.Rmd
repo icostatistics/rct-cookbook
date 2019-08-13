@@ -70,10 +70,10 @@ use "stata/rct", clear
 quietly logistic catout i.trt i.site covar  if time==3, coef
 quietly margins trt, post
 margins, coeflegend
-nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))
+nlcom (ratio1: (_b[1.trt]/_b[0bn.trt]))
 ```
 
-The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that we use the logarithmic function for stability. To get the relative risk estimates, the results need to be exponentiated. Note that I do not know the properties of this estimator, and it might be clever to check the estimates using bootstrap.
+The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that I do not know the properties of this estimator, and it might be clever to check the estimates using bootstrap.
 
 Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits).
 
@@ -88,7 +88,7 @@ rct %>%
   emmeans("trt", type = "response")
   
 ```
-We notice that the estimates are quite different from the average prediced marginal probabilities. The problem also is that the `emmeans`-package does not present pairwise comparisons on the probability scale. 
+We notice that the estimates are quite different from the average prediced marginal probabilities. The problem also is that the `emmeans`-package does not present pairwise comparisons on the probability scale. Thus, I would not use this method.
 
 Another option is to bootstrap the predicted marginal predicitons:
 
@@ -123,7 +123,7 @@ library(boot)
    select(-bias) %>%
    knitr::kable(digits = 3)
 ```
-We see that the estimates are identical to the Stata estimates, although the standard errors and confidence limits are a bit different. 
+We see that the estimates are identical to the Stata estimates, although the standard errors and confidence limits are a bit different. But I actually think the bootstrap estimates are better.
 
 
 The estimated marginal risk difference in R is computed using the `margins`-package. 
@@ -209,7 +209,7 @@ quietly melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pi
 
 *Compute the predictive margins by time and treatment
 
-quietly margins time#trt
+margins time#trt
 
 *Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
 
@@ -217,7 +217,7 @@ marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(colo
 graph export stata/figures/cat_fig1.pdf, replace 
 ```
 
-```{r}
+```{r, out.width="85%", fig.cap="Margins plot by Stata"}
 knitr::include_graphics("stata/figures/cat_fig1.pdf")
 ```
 

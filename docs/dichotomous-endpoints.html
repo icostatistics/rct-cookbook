@@ -13,7 +13,7 @@
   
   
   <meta property="og:description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
-  <meta name="github-repo" content="rstudio/bookdown-demo" />
+  <meta name="github-repo" content="icostatistics/rct-cookbook" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 4 Dichotomous endpoints | Analyzing RCTs: A Cookbook" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="continuous-endpoints.html">
-<link rel="next" href="applications.html">
+<link rel="next" href="time-to-event-analyses.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -156,11 +156,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-2"><i class="fa fa-check"></i><b>4.3.1</b> Reporting</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
-<li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
-<li class="chapter" data-level="5.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>5.2</b> Example two</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
+<li class="chapter" data-level="5" data-path="time-to-event-analyses.html"><a href="time-to-event-analyses.html"><i class="fa fa-check"></i><b>5</b> Time to event analyses</a></li>
+<li class="chapter" data-level="6" data-path="sample-size-calculations.html"><a href="sample-size-calculations.html"><i class="fa fa-check"></i><b>6</b> Sample size calculations</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
@@ -340,7 +337,7 @@ margins, dydx(trt)</code></pre>
 quietly logistic catout i.trt i.site covar  if time==3, coef
 quietly margins trt, post
 margins, coeflegend
-nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))</code></pre>
+nlcom (ratio1: (_b[1.trt]/_b[0bn.trt]))</code></pre>
 <pre><code>## 
 ## . use &quot;stata/rct&quot;, cle(all strata combined)
 ## 
@@ -363,18 +360,18 @@ nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))</code></pre>
 ##      Active  |   .5111833  _b[1.trt]
 ## ------------------------------------------------------------------------------
 ## 
-## . nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))
+## . nlcom (ratio1: (_b[1.trt]/_b[0bn.trt]))
 ## 
-##       ratio1:  log(_b[1.trt]/_b[0bn.trt])
+##       ratio1:  (_b[1.trt]/_b[0bn.trt])
 ## 
 ## ------------------------------------------------------------------------------
 ##              |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
 ## -------------+----------------------------------------------------------------
-##       ratio1 |  -.5084969   .1141546    -4.45   0.000    -.7322358    -.284758
+##       ratio1 |   .6013989   .0686524     8.76   0.000     .4668426    .7359552
 ## ------------------------------------------------------------------------------
 ## 
 ## .</code></pre>
-<p>The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that we use the logarithmic function for stability. To get the relative risk estimates, the results need to be exponentiated. Note that I do not know the properties of this estimator, and it might be clever to check the estimates using bootstrap.</p>
+<p>The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that I do not know the properties of this estimator, and it might be clever to check the estimates using bootstrap.</p>
 <p>Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits).</p>
 </div>
 <div id="r-code-2" class="section level4">
@@ -391,7 +388,7 @@ nlcom (ratio1: log(_b[1.trt]/_b[0bn.trt]))</code></pre>
 ## Results are averaged over the levels of: site 
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the logit scale</code></pre>
-<p>We notice that the estimates are quite different from the average prediced marginal probabilities. The problem also is that the <code>emmeans</code>-package does not present pairwise comparisons on the probability scale.</p>
+<p>We notice that the estimates are quite different from the average prediced marginal probabilities. The problem also is that the <code>emmeans</code>-package does not present pairwise comparisons on the probability scale. Thus, I would not use this method.</p>
 <p>Another option is to bootstrap the predicted marginal predicitons:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(boot)
 
@@ -479,7 +476,7 @@ Placebo
 </tr>
 </tbody>
 </table>
-<p>We see that the estimates are identical to the Stata estimates, although the standard errors and confidence limits are a bit different.</p>
+<p>We see that the estimates are identical to the Stata estimates, although the standard errors and confidence limits are a bit different. But I actually think the bootstrap estimates are better.</p>
 <p>The estimated marginal risk difference in R is computed using the <code>margins</code>-package.</p>
 <pre class="sourceCode r"><code class="sourceCode r"> rlogistic &lt;-<span class="st"> </span>rct <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(time<span class="op">==</span><span class="dv">3</span>) <span class="op">%&gt;%</span>
@@ -762,7 +759,7 @@ quietly melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pi
 
 *Compute the predictive margins by time and treatment
 
-quietly margins time#trt
+margins time#trt
 
 *Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
 
@@ -778,7 +775,25 @@ graph export stata/figures/cat_fig1.pdf, replace </code></pre>
 ## . *Compute the predictive margins by time and treatment
 ## 
 ## . 
-## . quietly margins time#trt
+## . margins time#trt
+## 
+## Predictive margins                              Number of obs     =        294
+## Model VCE    : OIM
+## 
+## Expression   : Marginal predicted mean, predict()
+## 
+## ------------------------------------------------------------------------------
+##              |            Delta-method
+##              |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+## -------------+----------------------------------------------------------------
+##     time#trt |
+##   1#Placebo  |   .5476187   .0577701     9.48   0.000     .4343913     .660846
+##    1#Active  |   .3187847   .0540835     5.89   0.000     .2127831    .4247863
+##   2#Placebo  |   .7897137   .0463852    17.03   0.000     .6988004     .880627
+##    2#Active  |   .3770772   .0557815     6.76   0.000     .2677475    .4864068
+##   3#Placebo  |   .8467085   .0410465    20.63   0.000     .7662588    .9271581
+##    3#Active  |   .5147246   .0571038     9.01   0.000     .4028032     .626646
+## ------------------------------------------------------------------------------
 ## 
 ## . 
 ## . *Plot the predictive margins. Note that the arguments after the comma is just
@@ -796,7 +811,12 @@ graph export stata/figures/cat_fig1.pdf, replace </code></pre>
 ## 
 ## .</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cat_fig1.pdf&quot;</span>)</code></pre>
-<p><embed src="stata/figures/cat_fig1.pdf" /><!-- --></p>
+<div class="figure"><span id="fig:unnamed-chunk-7"></span>
+<img src="stata/figures/cat_fig1.pdf" alt="Margins plot by Stata" width="85%" />
+<p class="caption">
+Figure 4.1: Margins plot by Stata
+</p>
+</div>
 <p>Plotting in R</p>
 <pre class="sourceCode r"><code class="sourceCode r"> fpred &lt;-<span class="st"> </span><span class="cf">function</span>(formula, data, indices){
    d &lt;-<span class="st"> </span>data[indices,]
@@ -978,7 +998,7 @@ Placebo/3
         </div>
       </div>
 <a href="continuous-endpoints.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="applications.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="time-to-event-analyses.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

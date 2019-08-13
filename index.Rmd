@@ -6,26 +6,31 @@ site: bookdown::bookdown_site
 output: 
   bookdown::gitbook: default
 documentclass: book
-bibliography: [book.bib, packages.bib]
-biblio-style: apalike
+bibliography: ["packages.bib"]
+biblio-style: "apalike"
 link-citations: yes
 graphics: yes
-github-repo: rstudio/bookdown-demo
+github-repo: icostatistics/rct-cookbook
 description: "The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials"
 ---
 
 # Preface
 
-About the book 
+This is a working document describing how I usually analyse and present randomized controlled trials (RCTs), both in Stata and R. It is mainly a repository for code I use and need to refer to instead of searching through old code, but it could be useful for other as well. 
+
+
+I am quite new to R, and have embraced the [tidyverse](tidyverse.org) style of coding. The graphics are a mostly created using [ggplot2](ggplot2.tidyverse.org), but lately I have also started using the [`ggformula`](https://CRAN.R-project.org/package=ggformula) package.  The "book" is written in [RMarkdown](https://rmarkdown.rstudio.com) with [bookdown](bookdown.org). 
 
 ## Structure of the book
+
+The structure of the book is not very sophisticated. First there is an introduction where I introduce the concept of an RCT, and then I simualte a trial to be used in the continuation of the book. Chapter 3 and 4 are description on how to analyse continuous and dichotomous endpoints, both for single and repeated follow-up observations. The plan is to include also a chapter on time to event endpoints and sample size calculations. 
 
 ## Acknowledgements
 
 
-```{r include=FALSE}
+```{r, include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+  .packages(), 'bookdown', 'knitr', 'rmarkdown', 'tidyverse', 'ggplot2', 'ggformula', 'margins'
 ), 'packages.bib')
 ```
