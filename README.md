@@ -1,3 +1,5 @@
-This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). Please see the page "[Get Started](https://bookdown.org/yihui/bookdown/get-started.html)" at https://bookdown.org/yihui/bookdown/ for how to compile this example into HTML. You may generate a copy of the book in `bookdown::pdf_book` format by calling `bookdown::render_book('index.Rmd', 'bookdown::pdf_book')`. More detailed instructions are available here https://bookdown.org/yihui/bookdown/build-the-book.html.
+This is a working document describing how I usually analyse and present randomized controlled trials (RCTs), both in Stata and R. It is mainly a repository for code I use and need to refer to instead of searching through old code, but it could be useful for other as well.
 
-You can find the preview of this example at https://bookdown.org/yihui/bookdown-demo/.
+I am quite new to R, and have embraced the tidyverse style of coding. The graphics are a mostly created using ggplot2, but lately I have also started using the ggformula package. The “book” is written in RMarkdown with bookdown.
+
+You can find the preview of this book at https://icostatistics.github.io/rct-cookbook/index.html.
