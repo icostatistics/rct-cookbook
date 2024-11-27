@@ -8,10 +8,11 @@ library(broom)
 library(knitr)
 library(purrr)
 library(lme4)
-library(margins)
+library(marginaleffects)
 library(emmeans)
 library(boot)
 library(ggformula)
+library(Statamarkdown)
 ```
 
 ## Single follow-up
@@ -54,7 +55,7 @@ quietly logistic catout i.trt i.site covar  if time==3, coef
 margins trt
 ```
 
-The adjusted risk difference is calculated similarily.
+The adjusted risk difference is calculated similarly.
 
 ```{stata slogistic3_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
 use "stata/rct", clear 
@@ -79,20 +80,22 @@ Some journals require calculation of the number needed to treat (NNT), at least 
 
 #### R code
 
-The average predicted marginal probabilities are not easily computed in R. One option is to use the estimated marginal means computed using the `emmeans`-package:
+The average predicted marginal probabilities was previously not easily computed in R, but with the emergence of the very nice `marginaleffects`-package, this is now much easier:
 
 ```{r rlogistic2_3}
-rct %>% 
+mod <- rct %>% 
   filter(time == 3) %>%
-  glm(catout ~ trt + site + covar , data=., family = binomial) %>%
-  emmeans("trt", type = "response")
+  glm(catout ~ trt + site + covar , data=., family = binomial)
+
+mod %>%
+  avg_predictions(variables = list(trt = c("Active", "Placebo")), type = "response") 
   
 ```
-We notice that the estimates are quite different from the average prediced marginal probabilities. The problem also is that the `emmeans`-package does not present pairwise comparisons on the probability scale. Thus, I would not use this method.
+We notice that the estimates are equal to the Stata output..
 
-Another option is to bootstrap the predicted marginal predicitons:
+Another option is to bootstrap the predicted marginal predictions:
 
-```{r rlogistic3boot, cache = TRUE}
+```{r rlogistic3boot, cache = FALSE}
 library(boot)
 
  fpred <- function(formula, data, indices){
@@ -126,7 +129,7 @@ library(boot)
 We see that the estimates are identical to the Stata estimates, although the standard errors and confidence limits are a bit different. But I actually think the bootstrap estimates are better.
 
 
-The estimated marginal risk difference in R is computed using the `margins`-package. 
+The estimated marginal risk difference in R is computed using the `marginaleffects`-package again. 
 
 ```{r rlogistic3_03}
  rlogistic <- rct %>% 
@@ -134,16 +137,31 @@ The estimated marginal risk difference in R is computed using the `margins`-pack
   glm(catout ~ trt + site + covar , data=., family = binomial)
 
 
-  margins(model = rlogistic, variables = "trt", data = filter(rct,time==3), vce = "delta") %>%
-  summary()
+  rlogistic %>% 
+    avg_comparisons(variables = list(trt = c("Active", "Placebo")), type = "response")
 ```
 
 We see that the estimates are identical to the Stata estimates. 
 
-Risk ratios are definitely not that easily computed in R, probably best done using bootstrapping:
+The relative risk is very easily computed in R using the `marginaleffects`-package:
 
-```{r rlogistic4boot, cache = TRUE}
+```{r rlogistic3_04}
+ rlogistic <- rct %>% 
+  filter(time==3) %>%
+  glm(catout ~ trt + site + covar , data=., family = binomial)
+
+
+  rlogistic %>% 
+    avg_comparisons(variables = list(trt = c("Active", "Placebo")), type = "response", comparison = "ratioavg")
+```
+
+The estimate is the inverse of the Stata estimate, and the confidence limits are very similar. There is probably a slight difference in how these are computed. 
+
+This is possible to do also by bootstrapping, but it is a bit more complicated:
+
+```{r rlogistic4boot, cache = FALSE}
 library(boot)
+library(prediction)
 
 
  fpred <- function(formula, data, indices){
@@ -191,12 +209,14 @@ melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pid:
 
 In R, this model is coded as:
 ```{r rglmm1_3}
+library(lme4)
 rct %>%
   filter(time != 0) %>%
-  glmer(catout ~ trt + time + trt*time + site + covar + (1|pid), 
+  glmer(catout ~ trt + time + trt*time + site + covar + (1|pid), 
         data = ., 
         family = binomial, 
-        nAGQ = 7)
+        nAGQ = 7) %>% 
+  summary()
 ```
 
 
@@ -222,58 +242,69 @@ knitr::include_graphics("stata/figures/cat_fig1.pdf")
 ```
 
 
-Plotting in R
+The same in R using the `marginaleffects`-package:
 
-```{r rglmm2boot_03, cache = TRUE}
- fpred <- function(formula, data, indices){
-   d <- data[indices,]
-   fit <- glmer(formula, data = d, family = binomial)
-   pred <- prediction(fit,
-                      data = d, 
-                      at = list(trt = c("Active", "Placebo"), time = c("1", "2", "3"))) %>%
-     as_tibble %>%
-     group_by(trt, time) %>%
-     summarise(mean = mean(fitted)) %>%
-     ungroup() %>%
-     mutate(name = paste0(trt, "/", time)) %>%
-     select(name,mean) %>%
-     spread(name,mean) %>%
-     as_vector
-  return(pred)
- }
+
+```{r rglmm2_03, cache = FALSE}
  
- data <- filter(rct, time != 0 )
- result <- boot(data = data, 
-                statistic = fpred, 
-                R = 2000, 
-                formula = catout ~ trt + time + trt*time + site + covar + (1|pid),
-                parallel = "multicore",
-                ncpus = 4) %>%
-   tidy(conf.int = TRUE) 
- 
- result %>%
-   select(-bias) %>%
-   knitr::kable(digits = 3)
+mod <- rct %>%
+  filter(time != 0) %>%
+  glmer(catout ~ trt + time + trt*time + site + covar + (1|pid), 
+        data = ., 
+        family = binomial, 
+        nAGQ = 7)
+
+pred <- mod %>% 
+  avg_predictions(variables = list(trt = c( "Placebo", "Active"), time = c("1","2", "3")), type = "response") 
+
+pred
+```
+The estimated marginal plot is then given by:
+```{r rmixed4plot_02, warning=FALSE}
+
+
+
+
+pred %>% 
+  ggplot(aes(time, estimate, color=trt, group=trt)) +
+  geom_point(position = position_dodge(0.04)) +
+  geom_line() + 
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                width=.2,
+                position = position_dodge(0.04)) + 
+  ylab("Estimate") +
+  xlab("Time") +
+  theme_classic() + 
+  theme(legend.position=c(0.1,0.9)) +
+  scale_colour_brewer(palette = "Set1", name = "Treatment")
+
+
 ```
 
-```{r}
-result %>%
-  separate(term, into = c("trt", "time")) %>%
-  mutate_at(c("trt","time"), factor) %>%
-  gf_line(statistic ~ time, color = ~trt, group = ~trt, 
-              position = position_dodge(0.04)) %>%
-  gf_point(position = position_dodge(0.04)) %>%
-  gf_errorbar(conf.low + conf.high ~ time, color = ~ trt, 
-              width = .1, 
-              position = position_dodge(0.04)) %>%
-  gf_labs(x = "Time", 
-          y = "Probability", 
-          color = "Treatment") %>%
-  gf_theme(theme_classic(), legend.position = c(0.1, 0.9)) %>%
-  gf_refine(scale_colour_brewer(palette = "Set1", name = "Treatment")) %>%
-  gf_lims(y = c(0,1))
-  
+The treatment differences at different timepoints are then calculated with:
+
+```{stata sglmm2_03, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
+use "stata/rct", clear
+quietly melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pid:
+margins time, dydx(trt)
 ```
+
+In R this is done with the `marginaleffects`-package:
+
+```{r rglmm3_03}
+mod <- rct %>%
+  filter(time != 0) %>%
+  glmer(catout ~ trt + time + trt*time + site + covar + (1|pid), 
+        data = ., 
+        family = binomial, 
+        nAGQ = 7)
+
+mod %>%
+  avg_comparisons(variables = list(trt = c("Active", "Placebo")), by = "time", type = "response", re.form = NA)
+
+```
+We see the results are slightly different to the Stata results, but the differences are small.
+
 
 
 

@@ -12,8 +12,8 @@ library(broom)
 library(knitr)
 library(purrr)
 library(lme4)
-library(margins)
-library(emmeans)
+library(marginaleffects)
+library(Statamarkdown)
 ```
 # Continuous endpoints
 
@@ -22,9 +22,12 @@ When the outcome consists of a single follow-up assessment of the continuous end
 
 ### Stata code
 
+
 ```{stata sancova1_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
-use "stata/rct", clear 
+
+use stata/rct, clear 
 regress contout i.trt i.site covar contbl if time==3
+
 ```
 Note that we here looked at the outcome at time 3 as the primary outcome. It does not matter if we use this or the change from baseline to time 3, due to the baseline adjustment:
 
@@ -122,7 +125,7 @@ rct %>%
 ```
 Note that we need to specify "REML=FALSE" to produce Maximum Likelihood estimates to be consistent with the Stata estimates. 
 
-This is clearly not a good model since it assumes that the treatment effect is the same at all timepoints (including baseline). Since we should assume no treatment difference at baseline, the model is clearly wrong. We see this when we plot the model estimates through the "margins" and "marginsplot" procedures in Stata, and the "margins"-package in R. The "margins"-package is a port from Stata.  
+This is clearly not a good model since it assumes that the treatment effect is the same at all timepoints (including baseline). Since we should assume no treatment difference at baseline, the model is clearly wrong. We see this when we plot the model estimates through the "margins" and "marginsplot" procedures in Stata, and the "marginaleffects"-package in R. The "marginaleffects"-package is heavily influenced by Stata.  
 
 <!-- Note that the Stata offers the best way to present the marginal estimates through the 'margins' and 'marginsplt' procedures. I have not been able to find R packages that integrates this in a similar consistent way, although the 'margins' R package delivers some of the functionality.   -->
 
@@ -189,6 +192,31 @@ graph export stata/figures/cont_fig2.pdf, replace
 knitr::include_graphics("stata/figures/cont_fig2.pdf")
 ```
 
+In R this can be achieved by:
+```{r rmixed3plot_02, warning=FALSE }
+
+mod <- 
+  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=rct, REML=FALSE) 
+
+mod %>% 
+  avg_predictions(variables = list(trt = c("Active", "Placebo"), time = c("0","1","2", "3")) )
+
+p <- mod %>% 
+  avg_predictions(variables = list(trt = c("Active", "Placebo"), time = c("0","1","2", "3")) ) %>% 
+  ggplot(aes(time, estimate, color=trt, group=trt)) +
+  geom_point(position = position_dodge(0.04)) +
+  geom_line() + 
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
+                width=.2,
+                position = position_dodge(0.04)) + 
+  ylab("Estimate") +
+  xlab("Time") +
+  theme_classic() + 
+  theme(legend.position=c(0.1,0.9)) +
+  scale_colour_brewer(palette = "Set1", name = "Treatment")
+p
+```
+
 From this we can estimate the treatment difference at the different timepoints:
 ```{stata smixed3diff_02, engine.path='/usr/local/bin/stata-se', cache = TRUE, dependson = 'sim'}
 use stata/rct, clear 
@@ -202,12 +230,9 @@ margins time, dydx(trt)
 This can also be achieved in R by:
 ```{r rmixed3diff_02, warning=FALSE }
 
-trt_margins <- rct %>%
-  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
-  margins(model = .,variables = "trt", at= list(time=c("0","1","2", "3")), vce = "delta") %>%
-  summary() 
-
-as_tibble(trt_margins)
+mod %>% 
+  avg_comparisons(variables = list(trt = c( "Placebo", "Active")), by = "time")
+  
 
 ```
 
@@ -215,72 +240,6 @@ as_tibble(trt_margins)
 
 
 
-A corresponding estimated marginal means plot can be made in R by using the emmeans package. 
-
-```{r rmixed3plot_02}
- rct %>%
-  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
-  ref_grid() %>%
-  emmeans( ~ trt | time) %>%
-  tidy
-
-rct %>%
-  lmer(contout ~ trt + time + trt*time + site + covar + (1|pid),data=., REML=FALSE) %>%
-  ref_grid() %>%
-  emmeans( ~ trt | time) %>%
-  tidy %>%
-  ggplot(aes(time, estimate, color=trt, group=trt)) +
-  geom_point(position = position_dodge(0.04)) +
-  geom_line() + 
-  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
-                width=.2,
-                position = position_dodge(0.04)) + 
-  ylab("Estimate") +
-  xlab("Time") +
-  theme_classic() + 
-  theme(legend.position=c(0.1,0.9)) +
-  scale_colour_brewer(palette = "Set1", name = "Treatment") 
-
-
-
-```
-
-Note that Stata's predictive margins and R's estimated marginal means has slightly different interpretations, especially when the data are not balanced. R can also produce predictive margins using the prediction-package, but there is a challenge with the confidence intervals. The best way to handle this is by bootstrapping, see example below. 
-
-
-
-```{r rmixed3boot, cache = TRUE}
-library(boot)
-
- fpred <- function(formula, data, indices){
-   d <- data[indices,]
-   fit <- lmer(formula, data = d, REML=F)
-   pred <- prediction(fit,data = d, at = list(trt = c("Active", "Placebo"), time = c("0", "1", "2", "3"))) %>%
-     as_tibble %>%
-     group_by(trt, time) %>%
-     summarise(mean = mean(fitted)) %>%
-     ungroup() %>%
-     mutate(name = paste0(trt,time)) %>%
-     select(name,mean) %>%
-     spread(name,mean) %>%
-     as_vector
-   return(pred)
- }
- 
- data <- rct
- result <- boot(data = data, 
-                statistic = fpred, 
-                R = 10000, 
-                formula = contout ~ trt + time + trt*time + site + covar + (1|pid),
-                parallel = "multicore",
-                ncpus = 4) %>%
-   tidy(conf.int = TRUE) 
- 
- result %>%
-   select(-bias) %>%
-   knitr::kable(digits = 3)
-```
-We note that the estimates are the same as for the Stata marginal means, but that the standard errors are smaller. Thus, in this case it seems that the standard error computed using the delta method is conservative. 
 
 
 ### Model with treatment-time interaction and baseline information
@@ -322,48 +281,102 @@ The same can be accomplished in R by adding a third treatment level (level at ba
 ```{r rmixed4_02, warning=FALSE}
 
 rmixed4_2 <- rct %>%
-  mutate(trt2 = if_else(time == 0,0,as.numeric(trt))) %>%
-  mutate(trt2f = factor(trt2)) %>%
-  lmer(contout ~ time + trt2f +  trt2f*time + site + covar + (1|pid),data=., REML=FALSE) 
-
-summary(rmixed4_2)
-
-rmixed4_2 %>%
-  margins(model = .,variables = "trt2f", at= list(time=c("1","2", "3")), vce = "delta") %>%
-  summary() %>%
-  filter(!is.na(z))
-
-
-```
-
-The estimated marginal plot is given by:
-```{r rmixed4plot_02, warning=FALSE}
-plotobject <- 
-  rct %>%
   mutate(trt2 = trt) %>%
   mutate(trt2 = fct_expand(trt2,"0")) %>%
   mutate(trt2 = if_else(time != "0",trt2,factor(0) )) %>%
-  lmer(contout ~ time +  trt2 +  trt2*time + site + covar + (1|pid),data=., REML=FALSE)  %>%
-  ref_grid() %>%
-  emmeans( ~ trt2 | time) %>%
-  tidy() %>%
-  filter((trt2 != 0 & time != 0)   | (trt2==0 & time == 0)) %>%
-  bind_rows(.,mutate(filter(.,trt2==0 & time==0),trt2 = fct_recode(trt2,"Placebo"="0"))) %>%
-  mutate(trt2= fct_recode(trt2,"Active" = "0")) 
+  lmer(contout ~ time +  trt2 +  trt2*time + site + covar + (1|pid),data=., REML=FALSE) 
+
+summary(rmixed4_2, correlation = FALSE)
+
+pred <- rmixed4_2 %>% 
+  avg_predictions(variables = list(trt2 = c("Active", "Placebo", "0"), time = c("0","1","2", "3")) ) %>% 
+  filter(!(trt2 == 0 & time != 0)) %>% 
+  filter(!(trt2 != 0 & time == 0))
+pred
+```
+
+The estimated marginal plot is then given by:
+```{r rmixed4plot_03, warning=FALSE}
 
 
-plotobject %>%
+
+p <- pred %>% 
+  mutate(trt2 = if_else(time == 0, "Active", trt2)) %>% 
+  bind_rows(pred %>% filter(time == 0) %>% mutate(trt2 = "Placebo")) %>% 
+  arrange( time, trt2)
+
+p %>% 
   ggplot(aes(time, estimate, color=trt2, group=trt2)) +
   geom_point(position = position_dodge(0.04)) +
   geom_line() + 
-  xlab("Time") + 
-  ylab("Estimate") +
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high), 
-                width=0.1,
-                position = position_dodge(0.04)) +
+                width=.2,
+                position = position_dodge(0.04)) + 
+  ylab("Estimate") +
+  xlab("Time") +
   theme_classic() + 
   theme(legend.position=c(0.1,0.9)) +
-  scale_colour_brewer(palette = "Set1", name="Treatment")
+  scale_colour_brewer(palette = "Set1", name = "Treatment")
+
+
 ```
+
+Note that the Stata and R output gives identical results, which is good!
+
+<!-- ## Change from baseline -->
+
+<!-- Sometimes the outcome measure as defined in the protocol is some variant of change from baseline. Doing analyses on the change from baseline variable is not recommended, as explained brilliantly here in the "Biostatistics for Biomedical Research" by Frank Harrell: [What's Wrong with Change in General](https://hbiostat.org/bbr/change#sec-change-gen). But sometimes the investigators are insistent on using a change measure, or we are bound by the protocol. But there is a way around this. Instead of computing the change from baseline before modelling this endpoint we can do it after modelling the raw measure, using predictions from the model. And then we can present the change from baseline in each group, while keeping the treatment effect estimate from the model.  -->
+
+<!-- In R this is again done using the excellent "marginaleffects"-package.  -->
+
+<!-- ```{r rmixed_04_bl, warning=FALSE} -->
+
+<!-- pred_bl2 <- rmixed4_2 %>%  -->
+<!--   predictions(newdata = datagrid(trt2 = c("Active", "Placebo", "0"),  -->
+<!--                                                   time = c("0", "3"),  -->
+<!--                                                   pid = data$pid)) %>%  -->
+<!--     filter(!(trt2 == 0 & time != 0)) %>%  -->
+<!--     filter(!(trt2 != 0 & time == 0)) %>%  -->
+<!--   group_by(pid) %>%  -->
+<!--   mutate(bl = if_else(time == 0, estimate, NA), -->
+<!--          bl = max(bl, na.rm = TRUE)) %>% -->
+<!--   ungroup %>%  -->
+<!--   mutate(chg = estimate - bl)  -->
+
+
+<!-- pred_bl3 <- rmixed4_2 %>%  -->
+<!--   predictions(newdata = datagrid(trt2 = c("Active", "Placebo", "0"),  -->
+<!--                                                   time = c("0", "3"), pid= data$pid)) -->
+
+
+<!--   test <- comparisons(rmixed4_2,  -->
+<!--                           variables = "time",  -->
+<!--                           newdata = datagrid(trt2 = c("Active", "Placebo", "0"),  -->
+<!--                                                   time = c("0", "3"))) -->
+
+<!-- library(nlme) -->
+<!--   rmixed4_3 <- rct %>% -->
+<!--     mutate(time2 = as.numeric(time)) %>% -->
+<!--   mutate(trt2 = trt) %>% -->
+<!--     mutate(trt2 = fct_expand(trt2,"0")) %>% -->
+<!--   mutate(trt2 = if_else(time != "0",trt2,factor(0) )) %>% -->
+<!--  #   filter(time != 0) %>%  -->
+<!--   gls(contout ~ time +  trt2 +  trt2*time + site + covar + contbl,data=., correlation = corExp(form =~ time2))  -->
+<!--   rmixed4_3 -->
+<!-- ``` -->
+
+
+
+<!-- # Splines -->
+
+<!-- Sometimes the data collection is not limited to visits, or the visits are not at exact timepoints. E.g. a one-year visit might have a visit window of 40 to 64 weeks. The resulting data could be anywhere in this interval, and the heterogeneity could have an impact on the results. Other trials capture data non-regularly, e.g. whenever the participant is at the hospital for any reason.  -->
+
+<!-- In these trials it would still be interesting to see the development over time. A solution in these situations is to use splines.  -->
+
+
+<!-- # Adjusting for baseline -->
+
+
+
 
 

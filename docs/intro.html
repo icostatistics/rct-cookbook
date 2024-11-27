@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 2 Introduction | Analyzing RCTs: A Cookbook</title>
   <meta name="description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 2 Introduction | Analyzing RCTs: A Cookbook" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
   <meta name="github-repo" content="icostatistics/rct-cookbook" />
@@ -24,22 +23,24 @@
 <meta name="author" content="Inge Christoffer Olsen" />
 
 
-<meta name="date" content="2019-08-13" />
+<meta name="date" content="2024-11-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html">
-<link rel="next" href="continuous-endpoints.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="continuous-endpoints.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
 
 
 
@@ -47,29 +48,34 @@
 
 
 
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -78,15 +84,15 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -99,7 +105,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -111,6 +117,11 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
 
 </head>
@@ -125,34 +136,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#structure-of-the-book"><i class="fa fa-check"></i><b>1.1</b> Structure of the book</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i><b>1.2</b> Acknowledgements</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#trial-flow"><i class="fa fa-check"></i><b>2.1</b> Trial Flow</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#simulated-dataset"><i class="fa fa-check"></i><b>2.2</b> Simulated dataset</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html"><i class="fa fa-check"></i><b>3</b> Continuous endpoints</a><ul>
-<li class="chapter" data-level="3.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#single-follow-up"><i class="fa fa-check"></i><b>3.1</b> Single follow-up</a><ul>
+<li class="chapter" data-level="3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html"><i class="fa fa-check"></i><b>3</b> Continuous endpoints</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#single-follow-up"><i class="fa fa-check"></i><b>3.1</b> Single follow-up</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#stata-code"><i class="fa fa-check"></i><b>3.1.1</b> Stata code</a></li>
 <li class="chapter" data-level="3.1.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#r-code"><i class="fa fa-check"></i><b>3.1.2</b> R code</a></li>
 <li class="chapter" data-level="3.1.3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#reporting"><i class="fa fa-check"></i><b>3.1.3</b> Reporting</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#repeated-follow-up"><i class="fa fa-check"></i><b>3.2</b> Repeated follow-up</a><ul>
+<li class="chapter" data-level="3.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#repeated-follow-up"><i class="fa fa-check"></i><b>3.2</b> Repeated follow-up</a>
+<ul>
 <li class="chapter" data-level="3.2.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#simple-model"><i class="fa fa-check"></i><b>3.2.1</b> Simple model</a></li>
 <li class="chapter" data-level="3.2.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#model-with-treatment-time-interaction"><i class="fa fa-check"></i><b>3.2.2</b> Model with treatment-time interaction</a></li>
 <li class="chapter" data-level="3.2.3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#model-with-treatment-time-interaction-and-baseline-information"><i class="fa fa-check"></i><b>3.2.3</b> Model with treatment-time interaction and baseline information</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html"><i class="fa fa-check"></i><b>4</b> Dichotomous endpoints</a><ul>
-<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a><ul>
+<li class="chapter" data-level="4" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html"><i class="fa fa-check"></i><b>4</b> Dichotomous endpoints</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#stata-code-1"><i class="fa fa-check"></i><b>4.1.1</b> Stata code</a></li>
 <li class="chapter" data-level="4.1.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#r-code-1"><i class="fa fa-check"></i><b>4.1.2</b> R code</a></li>
 <li class="chapter" data-level="4.1.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-1"><i class="fa fa-check"></i><b>4.1.3</b> Reporting</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#repeated-follow-up-1"><i class="fa fa-check"></i><b>4.2</b> Repeated follow-up</a></li>
-<li class="chapter" data-level="4.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#treatment-time-interaction-model"><i class="fa fa-check"></i><b>4.3</b> Treatment-time interaction model</a><ul>
+<li class="chapter" data-level="4.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#treatment-time-interaction-model"><i class="fa fa-check"></i><b>4.3</b> Treatment-time interaction model</a>
+<ul>
 <li class="chapter" data-level="4.3.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-2"><i class="fa fa-check"></i><b>4.3.1</b> Reporting</a></li>
 </ul></li>
 </ul></li>
@@ -176,10 +195,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="intro" class="section level1">
-<h1><span class="header-section-number">Chapter 2</span> Introduction</h1>
-<div id="trial-flow" class="section level2">
-<h2><span class="header-section-number">2.1</span> Trial Flow</h2>
+<div id="intro" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Introduction<a href="intro.html#intro" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="trial-flow" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Trial Flow<a href="intro.html#trial-flow" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The typical flow for an RCT should be something like:</p>
 <ol style="list-style-type: decimal">
 <li><p>Through hypothesis generating research, by clinical experience or sheer luck, a hypothesis has been developed.</p></li>
@@ -193,404 +212,238 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>The study is published.</p></li>
 </ol>
 </div>
-<div id="simulated-dataset" class="section level2">
-<h2><span class="header-section-number">2.2</span> Simulated dataset</h2>
+<div id="simulated-dataset" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Simulated dataset<a href="intro.html#simulated-dataset" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To show the different analyses methods, we need to simulate an RCT. I use Stata to create the simulated dataset, mainly because it is easier to get data from Stata to R than the other way around.</p>
 <p>We simulate a trial with repeated measurements for a continuous and a dichotomous endpoint in addition to a time to event endpoint. We include site as a strata in the randomisation (influencing the outcome), and an independent covariate which is highly predictive of the outcome.</p>
-<pre class="stata"><code>*Setup the randomisation with strata and blocks
-ralloc block bsize trt, nsubj(50)  sav(stata/rct)  ntreat(2) ratio(1) osize(2) init(4) seed(1914) strata(4)
-
-*Clean up and add repeated time points
-use stata/rct, clear
-  
-label drop _all
-gen pid = _n 
-replace trt=trt-1
-label def trt 0 &quot;Placebo&quot; 1 &quot;Active&quot;
-label val trt trt
-rename StratID site
-drop block bsize Seq*
-order pid site trt
-sort pid
-expand 4
-sort pid
-by pid: gen time=_n-1
-
-*Simulate the normaly distributed continuous endpoints
-*Generate the random intercept and residual
-
-gen incept0 = rnormal(0,1) if time == 0
-by pid: egen incept = max(incept0)
-drop incept0
-
-gen covar0 = round(rnormal(6,2),0.1) if time == 0
-by pid: egen covar = max(covar0)
-drop covar0
-
-gen resid = rnormal(0,1)
-
-*Set the mean by time and treatment
-
-generate mean = cond(trt==0 &amp; time==0, 4, cond(trt==0 &amp; time==1, 5.5, cond(trt==0 &amp; time==2, 7.2, cond(trt==0 &amp; time==3, 8, cond(trt==1 &amp; time==0, 4, cond(trt==1 &amp; time==1, 4.4, cond(trt==1 &amp; time==2, 5, cond(trt==1 &amp; time==3, 5.5,.))))))))
-
-*Set the mean by site and baseline covariate
-
-gen site_mean =  site/2 - 1.25
-
-*Generate the outcome
-
-gen contout = 10 + incept + mean + site_mean + covar + resid
-replace contout = round(contout,0.1)
-gen baseline0 = contout if time == 0
-by pid: egen contbl = max(baseline0)
-drop baseline0
-
-*Simulate the categorical outcome by latent variable
-
-gen catout = -10 + incept + mean + site_mean + covar + rlogistic() &gt; 0
-label def  catout 0 &quot;Negative&quot; 1 &quot;Positive&quot;
-label val catout catout
-
-*Remove all observations with a positive categorical outcome at baseline to simulate a selection criteria
-
-by pid: egen catoutbl = max(cond(time==0,catout,.))
-drop if catoutbl==1
-
-*Simulate a time to event outcome with a weibull distribution
-
-gen timemean =  2 + incept + mean + site_mean + covar if time == 0
-gen timeout0 = rweibull(1.5,timemean)
-gen censor0 = rnormal(12,1) if time == 0
-gen timecens0 = timeout &lt; censor0 if time == 0
-replace timeout = censor0 if timecens0 == 0
-by pid: egen timeout = max(timeout0)
-by pid: egen timecens = max(timecens0)
-replace timeout = round(timeout,0.1)
-label def cens 0 &quot;Censored&quot; 1 &quot;Event&quot;
-label val timecens cens
-
-*Clean up and name variables
-
-drop incept  mean resid  site_mean timemean - timecens0 catoutbl
-order pid - covar contbl
-label var pid &quot;Patient identifier&quot;
-label var site &quot;Site&quot;
-label var trt &quot;Treatment&quot;
-label var time &quot;Time point2&quot;
-label var covar &quot;Continuous baseline covariate&quot;
-label var contbl &quot;Baseline value continuous outcome&quot;
-label var contout &quot;Continuous outcome&quot;
-label var catout &quot;Categorical outcome&quot;
-label var timeout &quot;Time to event outcome&quot;
-label var timecens &quot;Censoring/event identifier&quot;
-
-save stata/rct, replace</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb1-1"><a href="intro.html#cb1-1" tabindex="-1"></a>*Setup the randomisation with <span class="kw">strata</span> and blocks</span>
+<span id="cb1-2"><a href="intro.html#cb1-2" tabindex="-1"></a>ralloc block bsize trt, nsubj(50)  sav(stata/rct)  ntreat(2) <span class="kw">ratio</span>(1) osize(2) init(4) <span class="dv">seed</span>(1914) <span class="kw">strata</span>(4)</span>
+<span id="cb1-3"><a href="intro.html#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="intro.html#cb1-4" tabindex="-1"></a>*Clean up and add repeated time points</span>
+<span id="cb1-5"><a href="intro.html#cb1-5" tabindex="-1"></a><span class="kw">use</span> stata/rct, <span class="kw">clear</span></span>
+<span id="cb1-6"><a href="intro.html#cb1-6" tabindex="-1"></a>  </span>
+<span id="cb1-7"><a href="intro.html#cb1-7" tabindex="-1"></a><span class="kw">label</span> <span class="kw">drop</span> <span class="dt">_all</span></span>
+<span id="cb1-8"><a href="intro.html#cb1-8" tabindex="-1"></a><span class="kw">gen</span> pid = <span class="dt">_n</span> </span>
+<span id="cb1-9"><a href="intro.html#cb1-9" tabindex="-1"></a><span class="kw">replace</span> trt=trt-1</span>
+<span id="cb1-10"><a href="intro.html#cb1-10" tabindex="-1"></a><span class="kw">label</span> def trt 0 <span class="st">&quot;Placebo&quot;</span> 1 <span class="st">&quot;Active&quot;</span></span>
+<span id="cb1-11"><a href="intro.html#cb1-11" tabindex="-1"></a><span class="kw">label</span> val trt trt</span>
+<span id="cb1-12"><a href="intro.html#cb1-12" tabindex="-1"></a><span class="kw">rename</span> StratID site</span>
+<span id="cb1-13"><a href="intro.html#cb1-13" tabindex="-1"></a><span class="kw">drop</span> block bsize Seq*</span>
+<span id="cb1-14"><a href="intro.html#cb1-14" tabindex="-1"></a><span class="kw">order</span> pid site trt</span>
+<span id="cb1-15"><a href="intro.html#cb1-15" tabindex="-1"></a><span class="kw">sort</span> pid</span>
+<span id="cb1-16"><a href="intro.html#cb1-16" tabindex="-1"></a>expand 4</span>
+<span id="cb1-17"><a href="intro.html#cb1-17" tabindex="-1"></a><span class="kw">sort</span> pid</span>
+<span id="cb1-18"><a href="intro.html#cb1-18" tabindex="-1"></a><span class="kw">by</span> pid: <span class="kw">gen</span> time=<span class="dt">_n</span>-1</span>
+<span id="cb1-19"><a href="intro.html#cb1-19" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="intro.html#cb1-20" tabindex="-1"></a>*Simulate the normaly distributed continuous endpoints</span>
+<span id="cb1-21"><a href="intro.html#cb1-21" tabindex="-1"></a>*Generate the random intercept and residual</span>
+<span id="cb1-22"><a href="intro.html#cb1-22" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="intro.html#cb1-23" tabindex="-1"></a><span class="kw">gen</span> incept0 = rnormal(0,1) <span class="kw">if</span> time == 0</span>
+<span id="cb1-24"><a href="intro.html#cb1-24" tabindex="-1"></a><span class="kw">by</span> pid: <span class="kw">egen</span> incept = <span class="fu">max</span>(incept0)</span>
+<span id="cb1-25"><a href="intro.html#cb1-25" tabindex="-1"></a><span class="kw">drop</span> incept0</span>
+<span id="cb1-26"><a href="intro.html#cb1-26" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="intro.html#cb1-27" tabindex="-1"></a><span class="kw">gen</span> covar0 = <span class="fu">round</span>(rnormal(6,2),0.1) <span class="kw">if</span> time == 0</span>
+<span id="cb1-28"><a href="intro.html#cb1-28" tabindex="-1"></a><span class="kw">by</span> pid: <span class="kw">egen</span> covar = <span class="fu">max</span>(covar0)</span>
+<span id="cb1-29"><a href="intro.html#cb1-29" tabindex="-1"></a><span class="kw">drop</span> covar0</span>
+<span id="cb1-30"><a href="intro.html#cb1-30" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="intro.html#cb1-31" tabindex="-1"></a><span class="kw">gen</span> <span class="kw">resid</span> = rnormal(0,1)</span>
+<span id="cb1-32"><a href="intro.html#cb1-32" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="intro.html#cb1-33" tabindex="-1"></a>*Set the <span class="kw">mean</span> <span class="kw">by</span> time and treatment</span>
+<span id="cb1-34"><a href="intro.html#cb1-34" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="intro.html#cb1-35" tabindex="-1"></a><span class="kw">generate</span> <span class="kw">mean</span> = <span class="fu">cond</span>(trt==0 &amp; time==0, 4, <span class="fu">cond</span>(trt==0 &amp; time==1, 5.5, <span class="fu">cond</span>(trt==0 &amp; time==2, 7.2, <span class="fu">cond</span>(trt==0 &amp; time==3, 8, <span class="fu">cond</span>(trt==1 &amp; time==0, 4, <span class="fu">cond</span>(trt==1 &amp; time==1, 4.4, <span class="fu">cond</span>(trt==1 &amp; time==2, 5, <span class="fu">cond</span>(trt==1 &amp; time==3, 5.5,.))))))))</span>
+<span id="cb1-36"><a href="intro.html#cb1-36" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="intro.html#cb1-37" tabindex="-1"></a>*Set the <span class="kw">mean</span> <span class="kw">by</span> site and baseline covariate</span>
+<span id="cb1-38"><a href="intro.html#cb1-38" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="intro.html#cb1-39" tabindex="-1"></a><span class="kw">gen</span> site_mean =  site/2 - 1.25</span>
+<span id="cb1-40"><a href="intro.html#cb1-40" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="intro.html#cb1-41" tabindex="-1"></a>*Generate the outcome</span>
+<span id="cb1-42"><a href="intro.html#cb1-42" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="intro.html#cb1-43" tabindex="-1"></a><span class="kw">gen</span> contout = 10 + incept + <span class="kw">mean</span> + site_mean + covar + <span class="kw">resid</span></span>
+<span id="cb1-44"><a href="intro.html#cb1-44" tabindex="-1"></a><span class="kw">replace</span> contout = <span class="fu">round</span>(contout,0.1)</span>
+<span id="cb1-45"><a href="intro.html#cb1-45" tabindex="-1"></a><span class="kw">gen</span> baseline0 = contout <span class="kw">if</span> time == 0</span>
+<span id="cb1-46"><a href="intro.html#cb1-46" tabindex="-1"></a><span class="kw">by</span> pid: <span class="kw">egen</span> contbl = <span class="fu">max</span>(baseline0)</span>
+<span id="cb1-47"><a href="intro.html#cb1-47" tabindex="-1"></a><span class="kw">drop</span> baseline0</span>
+<span id="cb1-48"><a href="intro.html#cb1-48" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="intro.html#cb1-49" tabindex="-1"></a>*Simulate the categorical outcome <span class="kw">by</span> latent <span class="kw">variable</span></span>
+<span id="cb1-50"><a href="intro.html#cb1-50" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="intro.html#cb1-51" tabindex="-1"></a><span class="kw">gen</span> catout = -10 + incept + <span class="kw">mean</span> + site_mean + covar + rlogistic() &gt; 0</span>
+<span id="cb1-52"><a href="intro.html#cb1-52" tabindex="-1"></a><span class="kw">label</span> def  catout 0 <span class="st">&quot;Negative&quot;</span> 1 <span class="st">&quot;Positive&quot;</span></span>
+<span id="cb1-53"><a href="intro.html#cb1-53" tabindex="-1"></a><span class="kw">label</span> val catout catout</span>
+<span id="cb1-54"><a href="intro.html#cb1-54" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="intro.html#cb1-55" tabindex="-1"></a>*Remove <span class="ot">all</span> observations with a positive categorical outcome <span class="fu">at</span> baseline to <span class="kw">simulate</span> a selection criteria</span>
+<span id="cb1-56"><a href="intro.html#cb1-56" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="intro.html#cb1-57" tabindex="-1"></a><span class="kw">by</span> pid: <span class="kw">egen</span> catoutbl = <span class="fu">max</span>(<span class="fu">cond</span>(time==0,catout,.))</span>
+<span id="cb1-58"><a href="intro.html#cb1-58" tabindex="-1"></a><span class="kw">drop</span> <span class="kw">if</span> catoutbl==1</span>
+<span id="cb1-59"><a href="intro.html#cb1-59" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="intro.html#cb1-60" tabindex="-1"></a>*Simulate a time to event outcome with a <span class="kw">weibull</span> distribution</span>
+<span id="cb1-61"><a href="intro.html#cb1-61" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="intro.html#cb1-62" tabindex="-1"></a><span class="kw">gen</span> timemean =  2 + incept + <span class="kw">mean</span> + site_mean + covar <span class="kw">if</span> time == 0</span>
+<span id="cb1-63"><a href="intro.html#cb1-63" tabindex="-1"></a><span class="kw">gen</span> timeout0 = rweibull(1.5,timemean)</span>
+<span id="cb1-64"><a href="intro.html#cb1-64" tabindex="-1"></a><span class="kw">gen</span> censor0 = rnormal(12,1) <span class="kw">if</span> time == 0</span>
+<span id="cb1-65"><a href="intro.html#cb1-65" tabindex="-1"></a><span class="kw">gen</span> timecens0 = timeout &lt; censor0 <span class="kw">if</span> time == 0</span>
+<span id="cb1-66"><a href="intro.html#cb1-66" tabindex="-1"></a><span class="kw">replace</span> timeout = censor0 <span class="kw">if</span> timecens0 == 0</span>
+<span id="cb1-67"><a href="intro.html#cb1-67" tabindex="-1"></a><span class="kw">by</span> pid: <span class="kw">egen</span> timeout = <span class="fu">max</span>(timeout0)</span>
+<span id="cb1-68"><a href="intro.html#cb1-68" tabindex="-1"></a><span class="kw">by</span> pid: <span class="kw">egen</span> timecens = <span class="fu">max</span>(timecens0)</span>
+<span id="cb1-69"><a href="intro.html#cb1-69" tabindex="-1"></a><span class="kw">replace</span> timeout = <span class="fu">round</span>(timeout,0.1)</span>
+<span id="cb1-70"><a href="intro.html#cb1-70" tabindex="-1"></a><span class="kw">label</span> def cens 0 <span class="st">&quot;Censored&quot;</span> 1 <span class="st">&quot;Event&quot;</span></span>
+<span id="cb1-71"><a href="intro.html#cb1-71" tabindex="-1"></a><span class="kw">label</span> val timecens cens</span>
+<span id="cb1-72"><a href="intro.html#cb1-72" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="intro.html#cb1-73" tabindex="-1"></a>*Clean up and <span class="bn">name</span> variables</span>
+<span id="cb1-74"><a href="intro.html#cb1-74" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="intro.html#cb1-75" tabindex="-1"></a><span class="kw">drop</span> incept  <span class="kw">mean</span> <span class="kw">resid</span>  site_mean timemean - timecens0 catoutbl</span>
+<span id="cb1-76"><a href="intro.html#cb1-76" tabindex="-1"></a><span class="kw">order</span> pid - covar contbl</span>
+<span id="cb1-77"><a href="intro.html#cb1-77" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> pid <span class="st">&quot;Patient identifier&quot;</span></span>
+<span id="cb1-78"><a href="intro.html#cb1-78" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> site <span class="st">&quot;Site&quot;</span></span>
+<span id="cb1-79"><a href="intro.html#cb1-79" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> trt <span class="st">&quot;Treatment&quot;</span></span>
+<span id="cb1-80"><a href="intro.html#cb1-80" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> time <span class="st">&quot;Time point2&quot;</span></span>
+<span id="cb1-81"><a href="intro.html#cb1-81" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> covar <span class="st">&quot;Continuous baseline covariate&quot;</span></span>
+<span id="cb1-82"><a href="intro.html#cb1-82" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> contbl <span class="st">&quot;Baseline value continuous outcome&quot;</span></span>
+<span id="cb1-83"><a href="intro.html#cb1-83" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> contout <span class="st">&quot;Continuous outcome&quot;</span></span>
+<span id="cb1-84"><a href="intro.html#cb1-84" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> catout <span class="st">&quot;Categorical outcome&quot;</span></span>
+<span id="cb1-85"><a href="intro.html#cb1-85" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> timeout <span class="st">&quot;Time to event outcome&quot;</span></span>
+<span id="cb1-86"><a href="intro.html#cb1-86" tabindex="-1"></a><span class="kw">label</span> <span class="kw">var</span> timecens <span class="st">&quot;Censoring/event identifier&quot;</span></span>
+<span id="cb1-87"><a href="intro.html#cb1-87" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="intro.html#cb1-88" tabindex="-1"></a><span class="kw">save</span> stata/rct, <span class="kw">replace</span></span></code></pre></div>
 <p>The resulting dataset then looks like this (without the Stata variable names and labels):</p>
 <table>
+<colgroup>
+<col width="5%" />
+<col width="7%" />
+<col width="11%" />
+<col width="7%" />
+<col width="8%" />
+<col width="10%" />
+<col width="11%" />
+<col width="13%" />
+<col width="11%" />
+<col width="13%" />
+</colgroup>
 <thead>
-<tr>
-<th style="text-align:right;">
-pid
-</th>
-<th style="text-align:left;">
-site
-</th>
-<th style="text-align:left;">
-trt
-</th>
-<th style="text-align:left;">
-time
-</th>
-<th style="text-align:right;">
-covar
-</th>
-<th style="text-align:right;">
-contbl
-</th>
-<th style="text-align:right;">
-contout
-</th>
-<th style="text-align:left;">
-catout
-</th>
-<th style="text-align:right;">
-timeout
-</th>
-<th style="text-align:right;">
-timecens
-</th>
+<tr class="header">
+<th align="right">pid</th>
+<th align="left">site</th>
+<th align="left">trt</th>
+<th align="left">time</th>
+<th align="right">covar</th>
+<th align="right">contbl</th>
+<th align="right">contout</th>
+<th align="left">catout</th>
+<th align="right">timeout</th>
+<th align="right">timecens</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Active
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-6.8
-</td>
-<td style="text-align:right;">
-20.2
-</td>
-<td style="text-align:right;">
-20.2
-</td>
-<td style="text-align:left;">
-Negative
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">1</td>
+<td align="left">Active</td>
+<td align="left">0</td>
+<td align="right">6.8</td>
+<td align="right">20.2</td>
+<td align="right">20.2</td>
+<td align="left">Negative</td>
+<td align="right">9.5</td>
+<td align="right">1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Active
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:right;">
-6.8
-</td>
-<td style="text-align:right;">
-20.2
-</td>
-<td style="text-align:right;">
-18.1
-</td>
-<td style="text-align:left;">
-Positive
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">1</td>
+<td align="left">Active</td>
+<td align="left">1</td>
+<td align="right">6.8</td>
+<td align="right">20.2</td>
+<td align="right">18.1</td>
+<td align="left">Positive</td>
+<td align="right">9.5</td>
+<td align="right">1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Active
-</td>
-<td style="text-align:left;">
-2
-</td>
-<td style="text-align:right;">
-6.8
-</td>
-<td style="text-align:right;">
-20.2
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:left;">
-Positive
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">1</td>
+<td align="left">Active</td>
+<td align="left">2</td>
+<td align="right">6.8</td>
+<td align="right">20.2</td>
+<td align="right">19.4</td>
+<td align="left">Positive</td>
+<td align="right">9.5</td>
+<td align="right">1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Active
-</td>
-<td style="text-align:left;">
-3
-</td>
-<td style="text-align:right;">
-6.8
-</td>
-<td style="text-align:right;">
-20.2
-</td>
-<td style="text-align:right;">
-20.0
-</td>
-<td style="text-align:left;">
-Positive
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">1</td>
+<td align="left">Active</td>
+<td align="left">3</td>
+<td align="right">6.8</td>
+<td align="right">20.2</td>
+<td align="right">20.0</td>
+<td align="left">Positive</td>
+<td align="right">9.5</td>
+<td align="right">1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Placebo
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-<td style="text-align:right;">
-20.0
-</td>
-<td style="text-align:right;">
-20.0
-</td>
-<td style="text-align:left;">
-Negative
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">1</td>
+<td align="left">Placebo</td>
+<td align="left">0</td>
+<td align="right">7.9</td>
+<td align="right">20.0</td>
+<td align="right">20.0</td>
+<td align="left">Negative</td>
+<td align="right">4.6</td>
+<td align="right">1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Placebo
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-<td style="text-align:right;">
-20.0
-</td>
-<td style="text-align:right;">
-20.9
-</td>
-<td style="text-align:left;">
-Positive
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">1</td>
+<td align="left">Placebo</td>
+<td align="left">1</td>
+<td align="right">7.9</td>
+<td align="right">20.0</td>
+<td align="right">20.9</td>
+<td align="left">Positive</td>
+<td align="right">4.6</td>
+<td align="right">1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Placebo
-</td>
-<td style="text-align:left;">
-2
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-<td style="text-align:right;">
-20.0
-</td>
-<td style="text-align:right;">
-23.5
-</td>
-<td style="text-align:left;">
-Positive
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">1</td>
+<td align="left">Placebo</td>
+<td align="left">2</td>
+<td align="right">7.9</td>
+<td align="right">20.0</td>
+<td align="right">23.5</td>
+<td align="left">Positive</td>
+<td align="right">4.6</td>
+<td align="right">1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:left;">
-Placebo
-</td>
-<td style="text-align:left;">
-3
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-<td style="text-align:right;">
-20.0
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:left;">
-Positive
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">1</td>
+<td align="left">Placebo</td>
+<td align="left">3</td>
+<td align="right">7.9</td>
+<td align="right">20.0</td>
+<td align="right">23.8</td>
+<td align="left">Positive</td>
+<td align="right">4.6</td>
+<td align="right">1</td>
 </tr>
 </tbody>
 </table>
 <p>The data can be visualised like this:</p>
-<pre class="sourceCode r"><code class="sourceCode r">rct <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">group_by</span>(trt,time) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mean=</span><span class="kw">mean</span>(contout),<span class="dt">sd=</span><span class="kw">sd</span>(contout)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>time, <span class="dt">y=</span>mean, <span class="dt">color=</span>trt,<span class="dt">group=</span>trt,<span class="dt">ymin =</span> mean<span class="op">-</span>sd, <span class="dt">ymax=</span>mean<span class="op">+</span>sd)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="dt">width=</span><span class="fl">0.2</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme_classic</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Mean outcome with standard deviations&quot;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="intro.html#cb2-1" tabindex="-1"></a>rct <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="intro.html#cb2-2" tabindex="-1"></a>  <span class="fu">group_by</span>(trt,time) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="intro.html#cb2-3" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean=</span><span class="fu">mean</span>(contout),<span class="at">sd=</span><span class="fu">sd</span>(contout)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="intro.html#cb2-4" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping=</span><span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>mean, <span class="at">color=</span>trt,<span class="at">group=</span>trt,<span class="at">ymin =</span> mean<span class="sc">-</span>sd, <span class="at">ymax=</span>mean<span class="sc">+</span>sd)) <span class="sc">+</span> </span>
+<span id="cb2-5"><a href="intro.html#cb2-5" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb2-6"><a href="intro.html#cb2-6" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">width=</span><span class="fl">0.2</span>) <span class="sc">+</span> </span>
+<span id="cb2-7"><a href="intro.html#cb2-7" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb2-8"><a href="intro.html#cb2-8" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb2-9"><a href="intro.html#cb2-9" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Mean outcome with standard deviations&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb2-10"><a href="intro.html#cb2-10" tabindex="-1"></a>  <span class="fu">scale_colour_brewer</span>(<span class="at">palette =</span> <span class="st">&quot;Set1&quot;</span>)</span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;trt&#39;. You can override using the
+## `.groups` argument.</code></pre>
 <p><img src="rct-cookbook_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 
 </div>
@@ -605,12 +458,13 @@ Positive
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -618,12 +472,12 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -638,7 +492,15 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["rct-cookbook.pdf"],
+"view": {
+"link": null,
+"text": null
+},
+"download": ["rct-cookbook.pdf", "rct-cookbook.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -652,9 +514,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();

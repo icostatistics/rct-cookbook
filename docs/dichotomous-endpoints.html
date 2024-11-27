@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 4 Dichotomous endpoints | Analyzing RCTs: A Cookbook</title>
   <meta name="description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
-  <meta name="generator" content="bookdown 0.11 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 4 Dichotomous endpoints | Analyzing RCTs: A Cookbook" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="The idea of this book is to capture some of the standard statistical analysis methods for randomised controlled trials" />
   <meta name="github-repo" content="icostatistics/rct-cookbook" />
@@ -24,22 +23,24 @@
 <meta name="author" content="Inge Christoffer Olsen" />
 
 
-<meta name="date" content="2019-08-13" />
+<meta name="date" content="2024-11-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="continuous-endpoints.html">
-<link rel="next" href="time-to-event-analyses.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link rel="prev" href="continuous-endpoints.html"/>
+<link rel="next" href="time-to-event-analyses.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
 
 
 
@@ -47,29 +48,34 @@
 
 
 
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -78,15 +84,15 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -99,7 +105,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -111,6 +117,11 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
 
 </head>
@@ -125,34 +136,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#structure-of-the-book"><i class="fa fa-check"></i><b>1.1</b> Structure of the book</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i><b>1.2</b> Acknowledgements</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a><ul>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#trial-flow"><i class="fa fa-check"></i><b>2.1</b> Trial Flow</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#simulated-dataset"><i class="fa fa-check"></i><b>2.2</b> Simulated dataset</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html"><i class="fa fa-check"></i><b>3</b> Continuous endpoints</a><ul>
-<li class="chapter" data-level="3.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#single-follow-up"><i class="fa fa-check"></i><b>3.1</b> Single follow-up</a><ul>
+<li class="chapter" data-level="3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html"><i class="fa fa-check"></i><b>3</b> Continuous endpoints</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#single-follow-up"><i class="fa fa-check"></i><b>3.1</b> Single follow-up</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#stata-code"><i class="fa fa-check"></i><b>3.1.1</b> Stata code</a></li>
 <li class="chapter" data-level="3.1.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#r-code"><i class="fa fa-check"></i><b>3.1.2</b> R code</a></li>
 <li class="chapter" data-level="3.1.3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#reporting"><i class="fa fa-check"></i><b>3.1.3</b> Reporting</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#repeated-follow-up"><i class="fa fa-check"></i><b>3.2</b> Repeated follow-up</a><ul>
+<li class="chapter" data-level="3.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#repeated-follow-up"><i class="fa fa-check"></i><b>3.2</b> Repeated follow-up</a>
+<ul>
 <li class="chapter" data-level="3.2.1" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#simple-model"><i class="fa fa-check"></i><b>3.2.1</b> Simple model</a></li>
 <li class="chapter" data-level="3.2.2" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#model-with-treatment-time-interaction"><i class="fa fa-check"></i><b>3.2.2</b> Model with treatment-time interaction</a></li>
 <li class="chapter" data-level="3.2.3" data-path="continuous-endpoints.html"><a href="continuous-endpoints.html#model-with-treatment-time-interaction-and-baseline-information"><i class="fa fa-check"></i><b>3.2.3</b> Model with treatment-time interaction and baseline information</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html"><i class="fa fa-check"></i><b>4</b> Dichotomous endpoints</a><ul>
-<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a><ul>
+<li class="chapter" data-level="4" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html"><i class="fa fa-check"></i><b>4</b> Dichotomous endpoints</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#single-follow-up-1"><i class="fa fa-check"></i><b>4.1</b> Single follow-up</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#stata-code-1"><i class="fa fa-check"></i><b>4.1.1</b> Stata code</a></li>
 <li class="chapter" data-level="4.1.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#r-code-1"><i class="fa fa-check"></i><b>4.1.2</b> R code</a></li>
 <li class="chapter" data-level="4.1.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-1"><i class="fa fa-check"></i><b>4.1.3</b> Reporting</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#repeated-follow-up-1"><i class="fa fa-check"></i><b>4.2</b> Repeated follow-up</a></li>
-<li class="chapter" data-level="4.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#treatment-time-interaction-model"><i class="fa fa-check"></i><b>4.3</b> Treatment-time interaction model</a><ul>
+<li class="chapter" data-level="4.3" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#treatment-time-interaction-model"><i class="fa fa-check"></i><b>4.3</b> Treatment-time interaction model</a>
+<ul>
 <li class="chapter" data-level="4.3.1" data-path="dichotomous-endpoints.html"><a href="dichotomous-endpoints.html#reporting-2"><i class="fa fa-check"></i><b>4.3.1</b> Reporting</a></li>
 </ul></li>
 </ul></li>
@@ -176,818 +195,680 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="dichotomous-endpoints" class="section level1">
-<h1><span class="header-section-number">Chapter 4</span> Dichotomous endpoints</h1>
-<div id="single-follow-up-1" class="section level2">
-<h2><span class="header-section-number">4.1</span> Single follow-up</h2>
+<div id="dichotomous-endpoints" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Dichotomous endpoints<a href="dichotomous-endpoints.html#dichotomous-endpoints" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="single-follow-up-1" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Single follow-up<a href="dichotomous-endpoints.html#single-follow-up-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>For a single follow-up assessment of a dichotomous endpoint, the main method I use is a standard logistic regression. Then we can adjust for stratification factors in the randomisation in addition to other pre-specified covariates, both categorical and continuous. In the simulated example, we define that the primary outcome is the dichotomous categorical outcome at time 3. Note that usually the baseline status of all patients are negative for the outcome, so adjusting for baseline is not necessary.</p>
-<div id="stata-code-1" class="section level3">
-<h3><span class="header-section-number">4.1.1</span> Stata code</h3>
-<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
-tabulate catout trt if time == 3, column
-logistic catout i.trt i.site covar  if time==3, coef</code></pre>
-<pre><code>## 
-## . use &quot;stata/rct&quot;, cle(all strata combined)
-## 
-## . tabulate catout trt if time == 3, column
-## 
-## +-------------------+
-## | Key               |
-## |-------------------|
-## |     frequency     |
-## | column percentage |
-## +-------------------+
-## 
-## Categorica |       Treatment
-##  l outcome |   Placebo     Active |     Total
-## -----------+----------------------+----------
-##   Negative |         9         22 |        31 
-##            |     18.00      45.83 |     31.63 
-## -----------+----------------------+----------
-##   Positive |        41         26 |        67 
-##            |     82.00      54.17 |     68.37 
-## -----------+----------------------+----------
-##      Total |        50         48 |        98 
-##            |    100.00     100.00 |    100.00 
-## 
-## . logistic catout i.trt i.site covar  if time==3, coef
-## 
-## Logistic regression                             Number of obs     =         98
-##                                                 LR chi2(5)        =      48.59
-##                                                 Prob &gt; chi2       =     0.0000
-## Log likelihood = -36.862204                     Pseudo R2         =     0.3973
-## 
-## ------------------------------------------------------------------------------
-##       catout |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##          trt |
-##      Active  |  -2.890301   .7850252    -3.68   0.000    -4.428922   -1.351679
-##              |
-##         site |
-##           2  |   .7783404   .8580245     0.91   0.364    -.9033566    2.460037
-##           3  |   1.423791   .7786531     1.83   0.067    -.1023412    2.949923
-##           4  |   .0253234   .8082887     0.03   0.975    -1.558893     1.60954
-##              |
-##        covar |   1.001078   .2329461     4.30   0.000     .5445124    1.457644
-##        _cons |  -2.463577   .8925892    -2.76   0.006     -4.21302   -.7141344
-## ------------------------------------------------------------------------------
-## 
-## .</code></pre>
+<div id="stata-code-1" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Stata code<a href="dichotomous-endpoints.html#stata-code-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb44"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb44-1"><a href="dichotomous-endpoints.html#cb44-1" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;stata/rct&quot;</span>, <span class="kw">clear</span> </span>
+<span id="cb44-2"><a href="dichotomous-endpoints.html#cb44-2" tabindex="-1"></a><span class="kw">tabulate</span> catout trt <span class="kw">if</span> time == 3, column</span>
+<span id="cb44-3"><a href="dichotomous-endpoints.html#cb44-3" tabindex="-1"></a><span class="kw">logistic</span> catout i.trt i.site covar  <span class="kw">if</span> time==3, coef</span></code></pre></div>
+<pre><code>(all strata combined)
+
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Categorica |       Treatment
+ l outcome |   Placebo     Active |     Total
+-----------+----------------------+----------
+  Negative |         9         22 |        31 
+           |     18.00      45.83 |     31.63 
+-----------+----------------------+----------
+  Positive |        41         26 |        67 
+           |     82.00      54.17 |     68.37 
+-----------+----------------------+----------
+     Total |        50         48 |        98 
+           |    100.00     100.00 |    100.00 
+
+
+Logistic regression                                     Number of obs =     98
+                                                        LR chi2(5)    =  48.59
+                                                        Prob &gt; chi2   = 0.0000
+Log likelihood = -36.862204                             Pseudo R2     = 0.3973
+
+------------------------------------------------------------------------------
+      catout | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         trt |
+     Active  |  -2.890301   .7850252    -3.68   0.000    -4.428922   -1.351679
+             |
+        site |
+          2  |   .7783404   .8580245     0.91   0.364    -.9033566    2.460037
+          3  |   1.423791   .7786531     1.83   0.067    -.1023412    2.949923
+          4  |   .0253234   .8082887     0.03   0.975    -1.558893     1.60954
+             |
+       covar |   1.001078   .2329461     4.30   0.000     .5445124    1.457644
+       _cons |  -2.463577   .8925892    -2.76   0.006     -4.21302   -.7141344
+------------------------------------------------------------------------------</code></pre>
 <p>Note that the use the <code>coef</code> option to get the log odds ratio estimates.</p>
 </div>
-<div id="r-code-1" class="section level3">
-<h3><span class="header-section-number">4.1.2</span> R code</h3>
-<pre class="sourceCode r"><code class="sourceCode r">rct &lt;-<span class="st"> </span><span class="kw">read_dta</span>(<span class="st">&quot;stata/rct.dta&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">modify_at</span>(<span class="kw">c</span>(<span class="st">&quot;trt&quot;</span>,<span class="st">&quot;catout&quot;</span>), haven<span class="op">::</span>as_factor, <span class="dt">levels =</span> <span class="st">&quot;labels&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">modify_at</span>(<span class="kw">c</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;time&quot;</span>), haven<span class="op">::</span>as_factor)
-rct <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(time<span class="op">==</span><span class="dv">3</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">glm</span>(catout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar , <span class="dt">data=</span>., <span class="dt">family =</span> binomial) <span class="op">%&gt;%</span>
-<span class="st">  </span>summary</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = catout ~ trt + site + covar, family = binomial, 
-##     data = .)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.9659  -0.5335   0.1943   0.5095   2.8873  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -2.46358    0.89259  -2.760 0.005780 ** 
-## trtActive   -2.89030    0.78502  -3.682 0.000232 ***
-## site2        0.77834    0.85802   0.907 0.364337    
-## site3        1.42379    0.77865   1.829 0.067470 .  
-## site4        0.02532    0.80829   0.031 0.975007    
-## covar        1.00108    0.23295   4.297 1.73e-05 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 122.318  on 97  degrees of freedom
-## Residual deviance:  73.724  on 92  degrees of freedom
-## AIC: 85.724
-## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+<div id="r-code-1" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> R code<a href="dichotomous-endpoints.html#r-code-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="dichotomous-endpoints.html#cb46-1" tabindex="-1"></a>rct <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">&quot;stata/rct.dta&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-2"><a href="dichotomous-endpoints.html#cb46-2" tabindex="-1"></a>  <span class="fu">modify_at</span>(<span class="fu">c</span>(<span class="st">&quot;trt&quot;</span>,<span class="st">&quot;catout&quot;</span>), haven<span class="sc">::</span>as_factor, <span class="at">levels =</span> <span class="st">&quot;labels&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-3"><a href="dichotomous-endpoints.html#cb46-3" tabindex="-1"></a>  <span class="fu">modify_at</span>(<span class="fu">c</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;time&quot;</span>), haven<span class="sc">::</span>as_factor)</span>
+<span id="cb46-4"><a href="dichotomous-endpoints.html#cb46-4" tabindex="-1"></a>rct <span class="sc">%&gt;%</span> </span>
+<span id="cb46-5"><a href="dichotomous-endpoints.html#cb46-5" tabindex="-1"></a>  <span class="fu">filter</span>(time<span class="sc">==</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-6"><a href="dichotomous-endpoints.html#cb46-6" tabindex="-1"></a>  <span class="fu">glm</span>(catout <span class="sc">~</span> trt <span class="sc">+</span> site <span class="sc">+</span> covar , <span class="at">data=</span>., <span class="at">family =</span> binomial) <span class="sc">%&gt;%</span></span>
+<span id="cb46-7"><a href="dichotomous-endpoints.html#cb46-7" tabindex="-1"></a>  summary</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = catout ~ trt + site + covar, family = binomial, 
+    data = .)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -2.46358    0.89259  -2.760 0.005780 ** 
+trtActive   -2.89030    0.78502  -3.682 0.000232 ***
+site2        0.77834    0.85802   0.907 0.364337    
+site3        1.42379    0.77865   1.829 0.067470 .  
+site4        0.02532    0.80829   0.031 0.975007    
+covar        1.00108    0.23295   4.297 1.73e-05 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 122.318  on 97  degrees of freedom
+Residual deviance:  73.724  on 92  degrees of freedom
+AIC: 85.724
+
+Number of Fisher Scoring iterations: 6</code></pre>
 <p>Not surprisingly, the estimates are identical.</p>
 </div>
-<div id="reporting-1" class="section level3">
-<h3><span class="header-section-number">4.1.3</span> Reporting</h3>
+<div id="reporting-1" class="section level3 hasAnchor" number="4.1.3">
+<h3><span class="header-section-number">4.1.3</span> Reporting<a href="dichotomous-endpoints.html#reporting-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Reporting for dichotomous endpoints is a bit tricky. The natural estimates from a logistic regression is odds and odds ratios, but these are less interpretable than risk differences or relative risk. As New England Journal of Medicine states in their Statistical Guidelines: “Odds ratios should be avoided, as they may overestimate the relative risks in many settings and be misinterpreted.” Fortunately, both Stata and R can estimate adjusted risk differences and relative risks from logistic regressions.</p>
-<div id="stata-code-2" class="section level4">
-<h4><span class="header-section-number">4.1.3.1</span> Stata code</h4>
+<div id="stata-code-2" class="section level4 hasAnchor" number="4.1.3.1">
+<h4><span class="header-section-number">4.1.3.1</span> Stata code<a href="dichotomous-endpoints.html#stata-code-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>First we compute the average prediced marginal probabilities. Basically this is done by calculating the predicted probability of a positive outcome for each patient, under both treatments, and then averaging. The standard errors are computed by the delta method.</p>
-<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
-quietly logistic catout i.trt i.site covar  if time==3, coef
-margins trt</code></pre>
-<pre><code>## 
-## . use &quot;stata/rct&quot;, cle(all strata combined)
-## 
-## . quietly logistic catout i.trt i.site covar  if time==3, coef
-## 
-## . margins trt
-## 
-## Predictive margins                              Number of obs     =         98
-## Model VCE    : OIM
-## 
-## Expression   : Pr(catout), predict()
-## 
-## ------------------------------------------------------------------------------
-##              |            Delta-method
-##              |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##          trt |
-##     Placebo  |   .8499905   .0387218    21.95   0.000     .7740972    .9258839
-##      Active  |   .5111833   .0533918     9.57   0.000     .4065374    .6158293
-## ------------------------------------------------------------------------------
-## 
-## .</code></pre>
-<p>The adjusted risk difference is calculated similarily.</p>
-<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
-quietly logistic catout i.trt i.site covar  if time==3, coef
-margins, dydx(trt)</code></pre>
-<pre><code>## 
-## . use &quot;stata/rct&quot;, cle(all strata combined)
-## 
-## . quietly logistic catout i.trt i.site covar  if time==3, coef
-## 
-## . margins, dydx(trt)
-## 
-## Average marginal effects                        Number of obs     =         98
-## Model VCE    : OIM
-## 
-## Expression   : Pr(catout), predict()
-## dy/dx w.r.t. : 1.trt
-## 
-## ------------------------------------------------------------------------------
-##              |            Delta-method
-##              |      dy/dx   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##          trt |
-##      Active  |  -.3388072   .0661086    -5.13   0.000    -.4683777   -.2092367
-## ------------------------------------------------------------------------------
-## Note: dy/dx for factor levels is the discrete change from the base level.
-## 
-## .</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb48-1"><a href="dichotomous-endpoints.html#cb48-1" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;stata/rct&quot;</span>, <span class="kw">clear</span> </span>
+<span id="cb48-2"><a href="dichotomous-endpoints.html#cb48-2" tabindex="-1"></a><span class="kw">quietly</span> <span class="kw">logistic</span> catout i.trt i.site covar  <span class="kw">if</span> time==3, coef</span>
+<span id="cb48-3"><a href="dichotomous-endpoints.html#cb48-3" tabindex="-1"></a>margins trt</span></code></pre></div>
+<pre><code>(all strata combined)
+
+
+
+Predictive margins                                          Number of obs = 98
+Model VCE: OIM
+
+Expression: Pr(catout), predict()
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         trt |
+    Placebo  |   .8499905   .0387218    21.95   0.000     .7740972    .9258839
+     Active  |   .5111833   .0533918     9.57   0.000     .4065374    .6158293
+------------------------------------------------------------------------------</code></pre>
+<p>The adjusted risk difference is calculated similarly.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb50-1"><a href="dichotomous-endpoints.html#cb50-1" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;stata/rct&quot;</span>, <span class="kw">clear</span> </span>
+<span id="cb50-2"><a href="dichotomous-endpoints.html#cb50-2" tabindex="-1"></a><span class="kw">quietly</span> <span class="kw">logistic</span> catout i.trt i.site covar  <span class="kw">if</span> time==3, coef</span>
+<span id="cb50-3"><a href="dichotomous-endpoints.html#cb50-3" tabindex="-1"></a>margins, <span class="kw">dydx</span>(trt)</span></code></pre></div>
+<pre><code>(all strata combined)
+
+
+
+Average marginal effects                                    Number of obs = 98
+Model VCE: OIM
+
+Expression: Pr(catout), predict()
+dy/dx wrt:  1.trt
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         trt |
+     Active  |  -.3388072   .0661086    -5.13   0.000    -.4683777   -.2092367
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.</code></pre>
 <p>We see that the risk difference is the difference of the estimated marginal probabilities we computed previously.</p>
 <p>The relative risk is a bit more difficult to calculate, but not much. It uses the <code>nlcom</code> method to compute non-linear combinations of estimates.</p>
-<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
-quietly logistic catout i.trt i.site covar  if time==3, coef
-quietly margins trt, post
-margins, coeflegend
-nlcom (ratio1: (_b[1.trt]/_b[0bn.trt]))</code></pre>
-<pre><code>## 
-## . use &quot;stata/rct&quot;, cle(all strata combined)
-## 
-## . quietly logistic catout i.trt i.site covar  if time==3, coef
-## 
-## . quietly margins trt, post
-## 
-## . margins, coeflegend
-## 
-## Predictive margins                              Number of obs     =         98
-## Model VCE    : OIM
-## 
-## Expression   : Pr(catout), predict()
-## 
-## ------------------------------------------------------------------------------
-##              |     Margin  Legend
-## -------------+----------------------------------------------------------------
-##          trt |
-##     Placebo  |   .8499905  _b[0bn.trt]
-##      Active  |   .5111833  _b[1.trt]
-## ------------------------------------------------------------------------------
-## 
-## . nlcom (ratio1: (_b[1.trt]/_b[0bn.trt]))
-## 
-##       ratio1:  (_b[1.trt]/_b[0bn.trt])
-## 
-## ------------------------------------------------------------------------------
-##              |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##       ratio1 |   .6013989   .0686524     8.76   0.000     .4668426    .7359552
-## ------------------------------------------------------------------------------
-## 
-## .</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb52-1"><a href="dichotomous-endpoints.html#cb52-1" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;stata/rct&quot;</span>, <span class="kw">clear</span> </span>
+<span id="cb52-2"><a href="dichotomous-endpoints.html#cb52-2" tabindex="-1"></a><span class="kw">quietly</span> <span class="kw">logistic</span> catout i.trt i.site covar  <span class="kw">if</span> time==3, coef</span>
+<span id="cb52-3"><a href="dichotomous-endpoints.html#cb52-3" tabindex="-1"></a><span class="kw">quietly</span> margins trt, <span class="kw">post</span></span>
+<span id="cb52-4"><a href="dichotomous-endpoints.html#cb52-4" tabindex="-1"></a>margins, coeflegend</span>
+<span id="cb52-5"><a href="dichotomous-endpoints.html#cb52-5" tabindex="-1"></a><span class="kw">nlcom</span> (ratio1: (_b[1.trt]/_b[0bn.trt]))</span></code></pre></div>
+<pre><code>(all strata combined)
+
+
+
+
+Predictive margins                                          Number of obs = 98
+Model VCE: OIM
+
+Expression: Pr(catout), predict()
+
+------------------------------------------------------------------------------
+             |     Margin   Legend
+-------------+----------------------------------------------------------------
+         trt |
+    Placebo  |   .8499905  _b[0bn.trt]
+     Active  |   .5111833  _b[1.trt]
+------------------------------------------------------------------------------
+
+      ratio1: (_b[1.trt]/_b[0bn.trt])
+
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      ratio1 |   .6013989   .0686524     8.76   0.000     .4668426    .7359552
+------------------------------------------------------------------------------</code></pre>
 <p>The trick is to know what goes into the _b[]-brackets, which will be revealed using the `coeflegend´-option. Note that I do not know the properties of this estimator, and it might be clever to check the estimates using bootstrap.</p>
 <p>Some journals require calculation of the number needed to treat (NNT), at least if the confidence interval of the adjusted risk difference does not include zero (for which the NNT is undefined). This is simply done by inverting the adjusted risk difference estimate (both point estimate and the confidence limits).</p>
 </div>
-<div id="r-code-2" class="section level4">
-<h4><span class="header-section-number">4.1.3.2</span> R code</h4>
-<p>The average predicted marginal probabilities are not easily computed in R. One option is to use the estimated marginal means computed using the <code>emmeans</code>-package:</p>
-<pre class="sourceCode r"><code class="sourceCode r">rct <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(time <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">glm</span>(catout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar , <span class="dt">data=</span>., <span class="dt">family =</span> binomial) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">emmeans</span>(<span class="st">&quot;trt&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)</code></pre>
-<pre><code>##  trt      prob     SE  df asymp.LCL asymp.UCL
-##  Placebo 0.946 0.0343 Inf     0.824     0.985
-##  Active  0.492 0.0933 Inf     0.318     0.668
-## 
-## Results are averaged over the levels of: site 
-## Confidence level used: 0.95 
-## Intervals are back-transformed from the logit scale</code></pre>
-<p>We notice that the estimates are quite different from the average prediced marginal probabilities. The problem also is that the <code>emmeans</code>-package does not present pairwise comparisons on the probability scale. Thus, I would not use this method.</p>
-<p>Another option is to bootstrap the predicted marginal predicitons:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(boot)
+<div id="r-code-2" class="section level4 hasAnchor" number="4.1.3.2">
+<h4><span class="header-section-number">4.1.3.2</span> R code<a href="dichotomous-endpoints.html#r-code-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>The average predicted marginal probabilities was previously not easily computed in R, but with the emergence of the very nice <code>marginaleffects</code>-package, this is now much easier:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="dichotomous-endpoints.html#cb54-1" tabindex="-1"></a>mod <span class="ot">&lt;-</span> rct <span class="sc">%&gt;%</span> </span>
+<span id="cb54-2"><a href="dichotomous-endpoints.html#cb54-2" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-3"><a href="dichotomous-endpoints.html#cb54-3" tabindex="-1"></a>  <span class="fu">glm</span>(catout <span class="sc">~</span> trt <span class="sc">+</span> site <span class="sc">+</span> covar , <span class="at">data=</span>., <span class="at">family =</span> binomial)</span>
+<span id="cb54-4"><a href="dichotomous-endpoints.html#cb54-4" tabindex="-1"></a></span>
+<span id="cb54-5"><a href="dichotomous-endpoints.html#cb54-5" tabindex="-1"></a>mod <span class="sc">%&gt;%</span></span>
+<span id="cb54-6"><a href="dichotomous-endpoints.html#cb54-6" tabindex="-1"></a>  <span class="fu">avg_predictions</span>(<span class="at">variables =</span> <span class="fu">list</span>(<span class="at">trt =</span> <span class="fu">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>)), <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) </span></code></pre></div>
+<pre><code>
+     trt Estimate Std. Error     z Pr(&gt;|z|)     S 2.5 % 97.5 %
+ Active     0.511     0.0534  9.57   &lt;0.001  69.7 0.407  0.616
+ Placebo    0.850     0.0387 21.95   &lt;0.001 352.4 0.774  0.926
 
- fpred &lt;-<span class="st"> </span><span class="cf">function</span>(formula, data, indices){
-   d &lt;-<span class="st"> </span>data[indices,]
-   fit &lt;-<span class="st"> </span><span class="kw">glm</span>(formula, <span class="dt">data =</span> d, <span class="dt">family =</span> binomial)
-   pred &lt;-<span class="st"> </span><span class="kw">prediction</span>(fit,<span class="dt">data =</span> d, <span class="dt">at =</span> <span class="kw">list</span>(<span class="dt">trt =</span> <span class="kw">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>))) <span class="op">%&gt;%</span>
-<span class="st">     </span>as_tibble <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">group_by</span>(trt) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">summarise</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(fitted)) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">mutate</span>(<span class="dt">name =</span> <span class="kw">paste0</span>(trt)) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">select</span>(name,mean) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">spread</span>(name,mean) <span class="op">%&gt;%</span>
-<span class="st">     </span>as_vector
-   <span class="kw">return</span>(pred)
- }
- 
- data &lt;-<span class="st"> </span><span class="kw">filter</span>(rct, time <span class="op">==</span><span class="st"> </span><span class="dv">3</span>)
- result &lt;-<span class="st"> </span><span class="kw">boot</span>(<span class="dt">data =</span> data, 
-                <span class="dt">statistic =</span> fpred, 
-                <span class="dt">R =</span> <span class="dv">10000</span>, 
-                <span class="dt">formula =</span> catout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar,
-                <span class="dt">parallel =</span> <span class="st">&quot;multicore&quot;</span>,
-                <span class="dt">ncpus =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw">tidy</span>(<span class="dt">conf.int =</span> <span class="ot">TRUE</span>) 
- 
- result <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw">select</span>(<span class="op">-</span>bias) <span class="op">%&gt;%</span>
-<span class="st">   </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+Columns: trt, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high 
+Type:  response </code></pre>
+<p>We notice that the estimates are equal to the Stata output..</p>
+<p>Another option is to bootstrap the predicted marginal predictions:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="dichotomous-endpoints.html#cb56-1" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb56-2"><a href="dichotomous-endpoints.html#cb56-2" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="dichotomous-endpoints.html#cb56-3" tabindex="-1"></a> fpred <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, data, indices){</span>
+<span id="cb56-4"><a href="dichotomous-endpoints.html#cb56-4" tabindex="-1"></a>   d <span class="ot">&lt;-</span> data[indices,]</span>
+<span id="cb56-5"><a href="dichotomous-endpoints.html#cb56-5" tabindex="-1"></a>   fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> d, <span class="at">family =</span> binomial)</span>
+<span id="cb56-6"><a href="dichotomous-endpoints.html#cb56-6" tabindex="-1"></a>   pred <span class="ot">&lt;-</span> <span class="fu">prediction</span>(fit,<span class="at">data =</span> d, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">trt =</span> <span class="fu">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb56-7"><a href="dichotomous-endpoints.html#cb56-7" tabindex="-1"></a>     as_tibble <span class="sc">%&gt;%</span></span>
+<span id="cb56-8"><a href="dichotomous-endpoints.html#cb56-8" tabindex="-1"></a>     <span class="fu">group_by</span>(trt) <span class="sc">%&gt;%</span></span>
+<span id="cb56-9"><a href="dichotomous-endpoints.html#cb56-9" tabindex="-1"></a>     <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(fitted)) <span class="sc">%&gt;%</span></span>
+<span id="cb56-10"><a href="dichotomous-endpoints.html#cb56-10" tabindex="-1"></a>     <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb56-11"><a href="dichotomous-endpoints.html#cb56-11" tabindex="-1"></a>     <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">paste0</span>(trt)) <span class="sc">%&gt;%</span></span>
+<span id="cb56-12"><a href="dichotomous-endpoints.html#cb56-12" tabindex="-1"></a>     <span class="fu">select</span>(name,mean) <span class="sc">%&gt;%</span></span>
+<span id="cb56-13"><a href="dichotomous-endpoints.html#cb56-13" tabindex="-1"></a>     <span class="fu">spread</span>(name,mean) <span class="sc">%&gt;%</span></span>
+<span id="cb56-14"><a href="dichotomous-endpoints.html#cb56-14" tabindex="-1"></a>     as_vector</span>
+<span id="cb56-15"><a href="dichotomous-endpoints.html#cb56-15" tabindex="-1"></a>   <span class="fu">return</span>(pred)</span>
+<span id="cb56-16"><a href="dichotomous-endpoints.html#cb56-16" tabindex="-1"></a> }</span>
+<span id="cb56-17"><a href="dichotomous-endpoints.html#cb56-17" tabindex="-1"></a> </span>
+<span id="cb56-18"><a href="dichotomous-endpoints.html#cb56-18" tabindex="-1"></a> data <span class="ot">&lt;-</span> <span class="fu">filter</span>(rct, time <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb56-19"><a href="dichotomous-endpoints.html#cb56-19" tabindex="-1"></a> result <span class="ot">&lt;-</span> <span class="fu">boot</span>(<span class="at">data =</span> data, </span>
+<span id="cb56-20"><a href="dichotomous-endpoints.html#cb56-20" tabindex="-1"></a>                <span class="at">statistic =</span> fpred, </span>
+<span id="cb56-21"><a href="dichotomous-endpoints.html#cb56-21" tabindex="-1"></a>                <span class="at">R =</span> <span class="dv">10000</span>, </span>
+<span id="cb56-22"><a href="dichotomous-endpoints.html#cb56-22" tabindex="-1"></a>                <span class="at">formula =</span> catout <span class="sc">~</span> trt <span class="sc">+</span> site <span class="sc">+</span> covar,</span>
+<span id="cb56-23"><a href="dichotomous-endpoints.html#cb56-23" tabindex="-1"></a>                <span class="at">parallel =</span> <span class="st">&quot;multicore&quot;</span>,</span>
+<span id="cb56-24"><a href="dichotomous-endpoints.html#cb56-24" tabindex="-1"></a>                <span class="at">ncpus =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb56-25"><a href="dichotomous-endpoints.html#cb56-25" tabindex="-1"></a>   <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<pre><code>Error in prediction(fit, data = d, at = list(trt = c(&quot;Active&quot;, &quot;Placebo&quot;))): could not find function &quot;prediction&quot;</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="dichotomous-endpoints.html#cb58-1" tabindex="-1"></a> result <span class="sc">%&gt;%</span></span>
+<span id="cb58-2"><a href="dichotomous-endpoints.html#cb58-2" tabindex="-1"></a>   <span class="fu">select</span>(<span class="sc">-</span>bias) <span class="sc">%&gt;%</span></span>
+<span id="cb58-3"><a href="dichotomous-endpoints.html#cb58-3" tabindex="-1"></a>   knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-statistic
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-conf.low
-</th>
-<th style="text-align:right;">
-conf.high
-</th>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">statistic</th>
+<th align="right">std.error</th>
+<th align="right">conf.low</th>
+<th align="right">conf.high</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-Active
-</td>
-<td style="text-align:right;">
-0.511
-</td>
-<td style="text-align:right;">
-0.067
-</td>
-<td style="text-align:right;">
-0.382
-</td>
-<td style="text-align:right;">
-0.645
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Placebo
-</td>
-<td style="text-align:right;">
-0.850
-</td>
-<td style="text-align:right;">
-0.042
-</td>
-<td style="text-align:right;">
-0.767
-</td>
-<td style="text-align:right;">
-0.928
-</td>
+<tr class="odd">
+<td align="left">Active</td>
+<td align="right">0.601</td>
+<td align="right">0.081</td>
+<td align="right">0.445</td>
+<td align="right">0.763</td>
 </tr>
 </tbody>
 </table>
 <p>We see that the estimates are identical to the Stata estimates, although the standard errors and confidence limits are a bit different. But I actually think the bootstrap estimates are better.</p>
-<p>The estimated marginal risk difference in R is computed using the <code>margins</code>-package.</p>
-<pre class="sourceCode r"><code class="sourceCode r"> rlogistic &lt;-<span class="st"> </span>rct <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(time<span class="op">==</span><span class="dv">3</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">glm</span>(catout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar , <span class="dt">data=</span>., <span class="dt">family =</span> binomial)
+<p>The estimated marginal risk difference in R is computed using the <code>marginaleffects</code>-package again.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="dichotomous-endpoints.html#cb59-1" tabindex="-1"></a> rlogistic <span class="ot">&lt;-</span> rct <span class="sc">%&gt;%</span> </span>
+<span id="cb59-2"><a href="dichotomous-endpoints.html#cb59-2" tabindex="-1"></a>  <span class="fu">filter</span>(time<span class="sc">==</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-3"><a href="dichotomous-endpoints.html#cb59-3" tabindex="-1"></a>  <span class="fu">glm</span>(catout <span class="sc">~</span> trt <span class="sc">+</span> site <span class="sc">+</span> covar , <span class="at">data=</span>., <span class="at">family =</span> binomial)</span>
+<span id="cb59-4"><a href="dichotomous-endpoints.html#cb59-4" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="dichotomous-endpoints.html#cb59-5" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="dichotomous-endpoints.html#cb59-6" tabindex="-1"></a>  rlogistic <span class="sc">%&gt;%</span> </span>
+<span id="cb59-7"><a href="dichotomous-endpoints.html#cb59-7" tabindex="-1"></a>    <span class="fu">avg_comparisons</span>(<span class="at">variables =</span> <span class="fu">list</span>(<span class="at">trt =</span> <span class="fu">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>)), <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
+<pre><code>
+ Term         Contrast Estimate Std. Error    z Pr(&gt;|z|)    S 2.5 % 97.5 %
+  trt Placebo - Active    0.339     0.0661 5.13   &lt;0.001 21.7 0.209  0.468
 
-
-  <span class="kw">margins</span>(<span class="dt">model =</span> rlogistic, <span class="dt">variables =</span> <span class="st">&quot;trt&quot;</span>, <span class="dt">data =</span> <span class="kw">filter</span>(rct,time<span class="op">==</span><span class="dv">3</span>), <span class="dt">vce =</span> <span class="st">&quot;delta&quot;</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">summary</span>()</code></pre>
-<pre><code>##     factor     AME     SE       z      p   lower   upper
-##  trtActive -0.3388 0.0661 -5.1250 0.0000 -0.4684 -0.2092</code></pre>
+Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high 
+Type:  response </code></pre>
 <p>We see that the estimates are identical to the Stata estimates.</p>
-<p>Risk ratios are definitely not that easily computed in R, probably best done using bootstrapping:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(boot)
+<p>The relative risk is very easily computed in R using the <code>marginaleffects</code>-package:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="dichotomous-endpoints.html#cb61-1" tabindex="-1"></a> rlogistic <span class="ot">&lt;-</span> rct <span class="sc">%&gt;%</span> </span>
+<span id="cb61-2"><a href="dichotomous-endpoints.html#cb61-2" tabindex="-1"></a>  <span class="fu">filter</span>(time<span class="sc">==</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-3"><a href="dichotomous-endpoints.html#cb61-3" tabindex="-1"></a>  <span class="fu">glm</span>(catout <span class="sc">~</span> trt <span class="sc">+</span> site <span class="sc">+</span> covar , <span class="at">data=</span>., <span class="at">family =</span> binomial)</span>
+<span id="cb61-4"><a href="dichotomous-endpoints.html#cb61-4" tabindex="-1"></a></span>
+<span id="cb61-5"><a href="dichotomous-endpoints.html#cb61-5" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="dichotomous-endpoints.html#cb61-6" tabindex="-1"></a>  rlogistic <span class="sc">%&gt;%</span> </span>
+<span id="cb61-7"><a href="dichotomous-endpoints.html#cb61-7" tabindex="-1"></a>    <span class="fu">avg_comparisons</span>(<span class="at">variables =</span> <span class="fu">list</span>(<span class="at">trt =</span> <span class="fu">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>)), <span class="at">type =</span> <span class="st">&quot;response&quot;</span>, <span class="at">comparison =</span> <span class="st">&quot;ratioavg&quot;</span>)</span></code></pre></div>
+<pre><code>
+ Term                     Contrast Estimate Std. Error    z Pr(&gt;|z|)    S 2.5 %
+  trt mean(Placebo) / mean(Active)     1.66       0.19 8.76   &lt;0.001 58.8  1.29
+ 97.5 %
+   2.03
 
-
- fpred &lt;-<span class="st"> </span><span class="cf">function</span>(formula, data, indices){
-   d &lt;-<span class="st"> </span>data[indices,]
-   fit &lt;-<span class="st"> </span><span class="kw">glm</span>(formula, <span class="dt">data =</span> d, <span class="dt">family =</span> binomial)
-   pred &lt;-<span class="st"> </span><span class="kw">prediction</span>(fit,<span class="dt">data =</span> d, <span class="dt">at =</span> <span class="kw">list</span>(<span class="dt">trt =</span> <span class="kw">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>))) <span class="op">%&gt;%</span>
-<span class="st">     </span>as_tibble <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">group_by</span>(trt) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">summarise</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(fitted)) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">mutate</span>(<span class="dt">name =</span> <span class="kw">paste0</span>(trt)) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">select</span>(name,mean) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">spread</span>(name,mean) <span class="op">%&gt;%</span>
-<span class="st">     </span>as_vector
-   <span class="kw">return</span>(pred[<span class="st">&quot;Active&quot;</span>]<span class="op">/</span>pred[<span class="st">&quot;Placebo&quot;</span>])
- }
- 
- data &lt;-<span class="st"> </span><span class="kw">filter</span>(rct, time <span class="op">==</span><span class="st"> </span><span class="dv">3</span>)
- result &lt;-<span class="st"> </span><span class="kw">boot</span>(<span class="dt">data =</span> data, 
-                <span class="dt">statistic =</span> fpred, 
-                <span class="dt">R =</span> <span class="dv">10000</span>, 
-                <span class="dt">formula =</span> catout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar,
-                <span class="dt">parallel =</span> <span class="st">&quot;multicore&quot;</span>,
-                <span class="dt">ncpus =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw">tidy</span>(<span class="dt">conf.int =</span> <span class="ot">TRUE</span>) 
- 
- result <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw">select</span>(<span class="op">-</span>bias) <span class="op">%&gt;%</span>
-<span class="st">   </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted 
+Type:  response </code></pre>
+<p>The estimate is the inverse of the Stata estimate, and the confidence limits are very similar. There is probably a slight difference in how these are computed.</p>
+<p>This is possible to do also by bootstrapping, but it is a bit more complicated:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="dichotomous-endpoints.html#cb63-1" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb63-2"><a href="dichotomous-endpoints.html#cb63-2" tabindex="-1"></a><span class="fu">library</span>(prediction)</span>
+<span id="cb63-3"><a href="dichotomous-endpoints.html#cb63-3" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="dichotomous-endpoints.html#cb63-4" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="dichotomous-endpoints.html#cb63-5" tabindex="-1"></a> fpred <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, data, indices){</span>
+<span id="cb63-6"><a href="dichotomous-endpoints.html#cb63-6" tabindex="-1"></a>   d <span class="ot">&lt;-</span> data[indices,]</span>
+<span id="cb63-7"><a href="dichotomous-endpoints.html#cb63-7" tabindex="-1"></a>   fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> d, <span class="at">family =</span> binomial)</span>
+<span id="cb63-8"><a href="dichotomous-endpoints.html#cb63-8" tabindex="-1"></a>   pred <span class="ot">&lt;-</span> <span class="fu">prediction</span>(fit,<span class="at">data =</span> d, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">trt =</span> <span class="fu">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb63-9"><a href="dichotomous-endpoints.html#cb63-9" tabindex="-1"></a>     as_tibble <span class="sc">%&gt;%</span></span>
+<span id="cb63-10"><a href="dichotomous-endpoints.html#cb63-10" tabindex="-1"></a>     <span class="fu">group_by</span>(trt) <span class="sc">%&gt;%</span></span>
+<span id="cb63-11"><a href="dichotomous-endpoints.html#cb63-11" tabindex="-1"></a>     <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(fitted)) <span class="sc">%&gt;%</span></span>
+<span id="cb63-12"><a href="dichotomous-endpoints.html#cb63-12" tabindex="-1"></a>     <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb63-13"><a href="dichotomous-endpoints.html#cb63-13" tabindex="-1"></a>     <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">paste0</span>(trt)) <span class="sc">%&gt;%</span></span>
+<span id="cb63-14"><a href="dichotomous-endpoints.html#cb63-14" tabindex="-1"></a>     <span class="fu">select</span>(name,mean) <span class="sc">%&gt;%</span></span>
+<span id="cb63-15"><a href="dichotomous-endpoints.html#cb63-15" tabindex="-1"></a>     <span class="fu">spread</span>(name,mean) <span class="sc">%&gt;%</span></span>
+<span id="cb63-16"><a href="dichotomous-endpoints.html#cb63-16" tabindex="-1"></a>     as_vector</span>
+<span id="cb63-17"><a href="dichotomous-endpoints.html#cb63-17" tabindex="-1"></a>   <span class="fu">return</span>(pred[<span class="st">&quot;Active&quot;</span>]<span class="sc">/</span>pred[<span class="st">&quot;Placebo&quot;</span>])</span>
+<span id="cb63-18"><a href="dichotomous-endpoints.html#cb63-18" tabindex="-1"></a> }</span>
+<span id="cb63-19"><a href="dichotomous-endpoints.html#cb63-19" tabindex="-1"></a> </span>
+<span id="cb63-20"><a href="dichotomous-endpoints.html#cb63-20" tabindex="-1"></a> data <span class="ot">&lt;-</span> <span class="fu">filter</span>(rct, time <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb63-21"><a href="dichotomous-endpoints.html#cb63-21" tabindex="-1"></a> result <span class="ot">&lt;-</span> <span class="fu">boot</span>(<span class="at">data =</span> data, </span>
+<span id="cb63-22"><a href="dichotomous-endpoints.html#cb63-22" tabindex="-1"></a>                <span class="at">statistic =</span> fpred, </span>
+<span id="cb63-23"><a href="dichotomous-endpoints.html#cb63-23" tabindex="-1"></a>                <span class="at">R =</span> <span class="dv">10000</span>, </span>
+<span id="cb63-24"><a href="dichotomous-endpoints.html#cb63-24" tabindex="-1"></a>                <span class="at">formula =</span> catout <span class="sc">~</span> trt <span class="sc">+</span> site <span class="sc">+</span> covar,</span>
+<span id="cb63-25"><a href="dichotomous-endpoints.html#cb63-25" tabindex="-1"></a>                <span class="at">parallel =</span> <span class="st">&quot;multicore&quot;</span>,</span>
+<span id="cb63-26"><a href="dichotomous-endpoints.html#cb63-26" tabindex="-1"></a>                <span class="at">ncpus =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb63-27"><a href="dichotomous-endpoints.html#cb63-27" tabindex="-1"></a>   <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb63-28"><a href="dichotomous-endpoints.html#cb63-28" tabindex="-1"></a> </span>
+<span id="cb63-29"><a href="dichotomous-endpoints.html#cb63-29" tabindex="-1"></a> result <span class="sc">%&gt;%</span></span>
+<span id="cb63-30"><a href="dichotomous-endpoints.html#cb63-30" tabindex="-1"></a>   <span class="fu">select</span>(<span class="sc">-</span>bias) <span class="sc">%&gt;%</span></span>
+<span id="cb63-31"><a href="dichotomous-endpoints.html#cb63-31" tabindex="-1"></a>   knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-statistic
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-conf.low
-</th>
-<th style="text-align:right;">
-conf.high
-</th>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">statistic</th>
+<th align="right">std.error</th>
+<th align="right">conf.low</th>
+<th align="right">conf.high</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-Active
-</td>
-<td style="text-align:right;">
-0.601
-</td>
-<td style="text-align:right;">
-0.08
-</td>
-<td style="text-align:right;">
-0.448
-</td>
-<td style="text-align:right;">
-0.763
-</td>
+<tr class="odd">
+<td align="left">Active</td>
+<td align="right">0.601</td>
+<td align="right">0.081</td>
+<td align="right">0.45</td>
+<td align="right">0.77</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 </div>
-<div id="repeated-follow-up-1" class="section level2">
-<h2><span class="header-section-number">4.2</span> Repeated follow-up</h2>
+<div id="repeated-follow-up-1" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Repeated follow-up<a href="dichotomous-endpoints.html#repeated-follow-up-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>When there are repeated dichotomous endpoints, there are usually two methods available, either the generalized estimating equations method or the generalized mixed model method. I prefer the mixed model approach because it has better missing data properties, and I like that the parameter estimates are interpretable conditional on the subject. In my mind it is more aligned to a causal interpretation. I will show how to do the mixed logistic regression model. We skip the simple model and go straight to a model with treatment-time interaction. Note that usually a dichotomous endpoint all have the same value at baseline (all subjects are in the same state), thus we rarely include the baseline. The model is a simple random intercept model, but it could of course also be expanded to a random intercept and slope model.</p>
 </div>
-<div id="treatment-time-interaction-model" class="section level2">
-<h2><span class="header-section-number">4.3</span> Treatment-time interaction model</h2>
+<div id="treatment-time-interaction-model" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Treatment-time interaction model<a href="dichotomous-endpoints.html#treatment-time-interaction-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In Stata, the model is coded as:</p>
-<pre class="stata"><code>use &quot;stata/rct&quot;, clear 
-bysort time: tabulate catout trt, column
-melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pid: </code></pre>
-<pre><code>## 
-## . use &quot;stata/rct&quot;, cle(all strata combined)
-## 
-## . bysort time: tabulate catout trt, column
-## 
-## -------------------------------------------------------------------------------
-## -&gt; time = 0
-## 
-## +-------------------+
-## | Key               |
-## |-------------------|
-## |     frequency     |
-## | column percentage |
-## +-------------------+
-## 
-## Categorica |       Treatment
-##  l outcome |   Placebo     Active |     Total
-## -----------+----------------------+----------
-##   Negative |        50         48 |        98 
-##            |    100.00     100.00 |    100.00 
-## -----------+----------------------+----------
-##      Total |        50         48 |        98 
-##            |    100.00     100.00 |    100.00 
-## 
-## -------------------------------------------------------------------------------
-## -&gt; time = 1
-## 
-## +-------------------+
-## | Key               |
-## |-------------------|
-## |     frequency     |
-## | column percentage |
-## +-------------------+
-## 
-## Categorica |       Treatment
-##  l outcome |   Placebo     Active |     Total
-## -----------+----------------------+----------
-##   Negative |        24         32 |        56 
-##            |     48.00      66.67 |     57.14 
-## -----------+----------------------+----------
-##   Positive |        26         16 |        42 
-##            |     52.00      33.33 |     42.86 
-## -----------+----------------------+----------
-##      Total |        50         48 |        98 
-##            |    100.00     100.00 |    100.00 
-## 
-## -------------------------------------------------------------------------------
-## -&gt; time = 2
-## 
-## +-------------------+
-## | Key               |
-## |-------------------|
-## |     frequency     |
-## | column percentage |
-## +-------------------+
-## 
-## Categorica |       Treatment
-##  l outcome |   Placebo     Active |     Total
-## -----------+----------------------+----------
-##   Negative |        12         29 |        41 
-##            |     24.00      60.42 |     41.84 
-## -----------+----------------------+----------
-##   Positive |        38         19 |        57 
-##            |     76.00      39.58 |     58.16 
-## -----------+----------------------+----------
-##      Total |        50         48 |        98 
-##            |    100.00     100.00 |    100.00 
-## 
-## -------------------------------------------------------------------------------
-## -&gt; time = 3
-## 
-## +-------------------+
-## | Key               |
-## |-------------------|
-## |     frequency     |
-## | column percentage |
-## +-------------------+
-## 
-## Categorica |       Treatment
-##  l outcome |   Placebo     Active |     Total
-## -----------+----------------------+----------
-##   Negative |         9         22 |        31 
-##            |     18.00      45.83 |     31.63 
-## -----------+----------------------+----------
-##   Positive |        41         26 |        67 
-##            |     82.00      54.17 |     68.37 
-## -----------+----------------------+----------
-##      Total |        50         48 |        98 
-##            |    100.00     100.00 |    100.00 
-## 
-## 
-## . melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pid: 
-## 
-## Fitting fixed-effects model:
-## 
-## Iteration 0:   log likelihood = -133.59899  
-## Iteration 1:   log likelihood = -129.32428  
-## Iteration 2:   log likelihood = -129.32244  
-## Iteration 3:   log likelihood = -129.32244  
-## 
-## Refining starting values:
-## 
-## Grid node 0:   log likelihood = -130.87679
-## 
-## Fitting full model:
-## 
-## Iteration 0:   log likelihood = -130.87679  
-## Iteration 1:   log likelihood =  -129.7867  
-## Iteration 2:   log likelihood = -129.37214  
-## Iteration 3:   log likelihood = -129.31054  
-## Iteration 4:   log likelihood = -129.31042  
-## Iteration 5:   log likelihood = -129.31042  
-## 
-## Mixed-effects logistic regression               Number of obs     =        294
-## Group variable:             pid                 Number of groups  =         98
-## 
-##                                                 Obs per group:
-##                                                               min =          3
-##                                                               avg =        3.0
-##                                                               max =          3
-## 
-## Integration method: mvaghermite                 Integration pts.  =          7
-## 
-##                                                 Wald chi2(9)      =      57.65
-## Log likelihood = -129.31042                     Prob &gt; chi2       =     0.0000
-## ------------------------------------------------------------------------------
-##       catout |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##          trt |
-##      Active  |  -1.445692   .5336445    -2.71   0.007    -2.491616   -.3997679
-##              |
-##         site |
-##           2  |  -.0293421   .4666747    -0.06   0.950    -.9440077    .8853234
-##           3  |     .72617   .4145006     1.75   0.080    -.0862363    1.538576
-##           4  |   .5185491   .4721013     1.10   0.272    -.4067524    1.443851
-##              |
-##        covar |   .9174909   .1319527     6.95   0.000     .6588684    1.176113
-##              |
-##         time |
-##           2  |   1.787348   .5856394     3.05   0.002     .6395156     2.93518
-##           3  |   2.365878   .6353582     3.72   0.000     1.120599    3.611157
-##              |
-##     trt#time |
-##    Active#2  |  -1.406754   .7657322    -1.84   0.066    -2.907561    .0940536
-##    Active#3  |  -1.127376    .785537    -1.44   0.151       -2.667    .4122484
-##              |
-##        _cons |  -4.424402   .7595232    -5.83   0.000     -5.91304   -2.935764
-## -------------+----------------------------------------------------------------
-## pid          |
-##    var(_cons)|   .0684106   .4545936                      1.51e-07    31004.17
-## ------------------------------------------------------------------------------
-## LR test vs. logistic model: chibar2(01) = 0.02        Prob &gt;= chibar2 = 0.4384
-## 
-## .</code></pre>
+<div class="sourceCode" id="cb64"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb64-1"><a href="dichotomous-endpoints.html#cb64-1" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;stata/rct&quot;</span>, <span class="kw">clear</span> </span>
+<span id="cb64-2"><a href="dichotomous-endpoints.html#cb64-2" tabindex="-1"></a><span class="kw">bysort</span> time: <span class="kw">tabulate</span> catout trt, column</span>
+<span id="cb64-3"><a href="dichotomous-endpoints.html#cb64-3" tabindex="-1"></a>melogit catout i.trt i.site covar i.time i.trt#i.time <span class="kw">if</span> time != 0 || pid: </span></code></pre></div>
+<pre><code>(all strata combined)
+
+
+-------------------------------------------------------------------------------
+-&gt; time = 0
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Categorica |       Treatment
+ l outcome |   Placebo     Active |     Total
+-----------+----------------------+----------
+  Negative |        50         48 |        98 
+           |    100.00     100.00 |    100.00 
+-----------+----------------------+----------
+     Total |        50         48 |        98 
+           |    100.00     100.00 |    100.00 
+
+-------------------------------------------------------------------------------
+-&gt; time = 1
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Categorica |       Treatment
+ l outcome |   Placebo     Active |     Total
+-----------+----------------------+----------
+  Negative |        24         32 |        56 
+           |     48.00      66.67 |     57.14 
+-----------+----------------------+----------
+  Positive |        26         16 |        42 
+           |     52.00      33.33 |     42.86 
+-----------+----------------------+----------
+     Total |        50         48 |        98 
+           |    100.00     100.00 |    100.00 
+
+-------------------------------------------------------------------------------
+-&gt; time = 2
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Categorica |       Treatment
+ l outcome |   Placebo     Active |     Total
+-----------+----------------------+----------
+  Negative |        12         29 |        41 
+           |     24.00      60.42 |     41.84 
+-----------+----------------------+----------
+  Positive |        38         19 |        57 
+           |     76.00      39.58 |     58.16 
+-----------+----------------------+----------
+     Total |        50         48 |        98 
+           |    100.00     100.00 |    100.00 
+
+-------------------------------------------------------------------------------
+-&gt; time = 3
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Categorica |       Treatment
+ l outcome |   Placebo     Active |     Total
+-----------+----------------------+----------
+  Negative |         9         22 |        31 
+           |     18.00      45.83 |     31.63 
+-----------+----------------------+----------
+  Positive |        41         26 |        67 
+           |     82.00      54.17 |     68.37 
+-----------+----------------------+----------
+     Total |        50         48 |        98 
+           |    100.00     100.00 |    100.00 
+
+
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -133.59899  
+Iteration 1:  Log likelihood = -129.32428  
+Iteration 2:  Log likelihood = -129.32244  
+Iteration 3:  Log likelihood = -129.32244  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -130.87679
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -130.87679  
+Iteration 1:  Log likelihood =  -129.7867  
+Iteration 2:  Log likelihood = -129.37214  
+Iteration 3:  Log likelihood = -129.31054  
+Iteration 4:  Log likelihood = -129.31042  
+Iteration 5:  Log likelihood = -129.31042  
+
+Mixed-effects logistic regression               Number of obs     =        294
+Group variable: pid                             Number of groups  =         98
+
+                                                Obs per group:
+                                                              min =          3
+                                                              avg =        3.0
+                                                              max =          3
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(9)      =      57.65
+Log likelihood = -129.31042                     Prob &gt; chi2       =     0.0000
+------------------------------------------------------------------------------
+      catout | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         trt |
+     Active  |  -1.445692   .5336445    -2.71   0.007    -2.491616   -.3997679
+             |
+        site |
+          2  |  -.0293421   .4666747    -0.06   0.950    -.9440077    .8853234
+          3  |     .72617   .4145006     1.75   0.080    -.0862363    1.538576
+          4  |   .5185491   .4721013     1.10   0.272    -.4067524    1.443851
+             |
+       covar |   .9174909   .1319527     6.95   0.000     .6588684    1.176113
+             |
+        time |
+          2  |   1.787348   .5856394     3.05   0.002     .6395156     2.93518
+          3  |   2.365878   .6353582     3.72   0.000     1.120599    3.611157
+             |
+    trt#time |
+   Active#2  |  -1.406754   .7657322    -1.84   0.066    -2.907561    .0940536
+   Active#3  |  -1.127376    .785537    -1.44   0.151       -2.667    .4122484
+             |
+       _cons |  -4.424402   .7595232    -5.83   0.000     -5.91304   -2.935764
+-------------+----------------------------------------------------------------
+pid          |
+   var(_cons)|   .0684106   .4545936                      1.51e-07    31004.17
+------------------------------------------------------------------------------
+LR test vs. logistic model: chibar2(01) = 0.02        Prob &gt;= chibar2 = 0.4384</code></pre>
 <p>In R, this model is coded as:</p>
-<pre class="sourceCode r"><code class="sourceCode r">rct <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">filter</span>(time <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">glmer</span>(catout <span class="op">~</span> trt <span class="op">+</span><span class="st"> </span>time <span class="op">+</span><span class="st"> </span>trt<span class="op">*</span>time <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>pid), 
-        <span class="dt">data =</span> ., 
-        <span class="dt">family =</span> binomial, 
-        <span class="dt">nAGQ =</span> <span class="dv">7</span>)</code></pre>
-<pre><code>## Generalized linear mixed model fit by maximum likelihood (Adaptive
-##   Gauss-Hermite Quadrature, nAGQ = 7) [glmerMod]
-##  Family: binomial  ( logit )
-## Formula: catout ~ trt + time + trt * time + site + covar + (1 | pid)
-##    Data: .
-##       AIC       BIC    logLik  deviance  df.resid 
-##  280.6208  321.1402 -129.3104  258.6208       283 
-## Random effects:
-##  Groups Name        Std.Dev.
-##  pid    (Intercept) 0.2615  
-## Number of obs: 294, groups:  pid, 98
-## Fixed Effects:
-##     (Intercept)        trtActive            time2            time3  
-##        -4.42430         -1.44555          1.78736          2.36563  
-##           site2            site3            site4            covar  
-##        -0.02945          0.72597          0.51845          0.91748  
-## trtActive:time2  trtActive:time3  
-##        -1.40683         -1.12716</code></pre>
-<div id="reporting-2" class="section level3">
-<h3><span class="header-section-number">4.3.1</span> Reporting</h3>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="dichotomous-endpoints.html#cb66-1" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb66-2"><a href="dichotomous-endpoints.html#cb66-2" tabindex="-1"></a>rct <span class="sc">%&gt;%</span></span>
+<span id="cb66-3"><a href="dichotomous-endpoints.html#cb66-3" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb66-4"><a href="dichotomous-endpoints.html#cb66-4" tabindex="-1"></a>  <span class="fu">glmer</span>(catout <span class="sc">~</span> trt <span class="sc">+</span> time <span class="sc">+</span> trt<span class="sc">*</span>time <span class="sc">+</span> site <span class="sc">+</span> covar <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>pid), </span>
+<span id="cb66-5"><a href="dichotomous-endpoints.html#cb66-5" tabindex="-1"></a>        <span class="at">data =</span> ., </span>
+<span id="cb66-6"><a href="dichotomous-endpoints.html#cb66-6" tabindex="-1"></a>        <span class="at">family =</span> binomial, </span>
+<span id="cb66-7"><a href="dichotomous-endpoints.html#cb66-7" tabindex="-1"></a>        <span class="at">nAGQ =</span> <span class="dv">7</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb66-8"><a href="dichotomous-endpoints.html#cb66-8" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>Generalized linear mixed model fit by maximum likelihood (Adaptive
+  Gauss-Hermite Quadrature, nAGQ = 7) [glmerMod]
+ Family: binomial  ( logit )
+Formula: catout ~ trt + time + trt * time + site + covar + (1 | pid)
+   Data: .
+
+     AIC      BIC   logLik deviance df.resid 
+   280.6    321.1   -129.3    258.6      283 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.8902 -0.5490  0.1407  0.5132  5.6565 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ pid    (Intercept) 0.06842  0.2616  
+Number of obs: 294, groups:  pid, 98
+
+Fixed effects:
+                Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)     -4.42440    0.75952  -5.825 5.70e-09 ***
+trtActive       -1.44556    0.53364  -2.709 0.006751 ** 
+time2            1.78740    0.58564   3.052 0.002273 ** 
+time3            2.36568    0.63534   3.724 0.000196 ***
+site2           -0.02946    0.46667  -0.063 0.949661    
+site3            0.72598    0.41449   1.751 0.079861 .  
+site4            0.51846    0.47210   1.098 0.272110    
+covar            0.91750    0.13195   6.953 3.57e-12 ***
+trtActive:time2 -1.40690    0.76574  -1.837 0.066163 .  
+trtActive:time3 -1.12718    0.78553  -1.435 0.151305    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Correlation of Fixed Effects:
+            (Intr) trtAct time2  time3  site2  site3  site4  covar  trtA:2
+trtActive   -0.117                                                        
+time2       -0.555  0.349                                                 
+time3       -0.604  0.295  0.475                                          
+site2       -0.188 -0.031  0.029  0.042                                   
+site3       -0.292 -0.115  0.059  0.077  0.477                            
+site4       -0.306 -0.061  0.052  0.078  0.398  0.462                     
+covar       -0.818 -0.226  0.293  0.373 -0.074  0.032  0.086              
+trtActv:tm2  0.385 -0.601 -0.750 -0.343 -0.020 -0.031 -0.037 -0.181       
+trtActv:tm3  0.363 -0.594 -0.336 -0.745 -0.029 -0.015 -0.048 -0.161  0.470</code></pre>
+<div id="reporting-2" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Reporting<a href="dichotomous-endpoints.html#reporting-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Plotting i Stata</p>
-<pre class="stata"><code>use stata/rct, clear 
-quietly melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 || pid: 
+<div class="sourceCode" id="cb68"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb68-1"><a href="dichotomous-endpoints.html#cb68-1" tabindex="-1"></a><span class="kw">use</span> stata/rct, <span class="kw">clear</span> </span>
+<span id="cb68-2"><a href="dichotomous-endpoints.html#cb68-2" tabindex="-1"></a><span class="kw">quietly</span> melogit catout i.trt i.site covar i.time i.trt#i.time <span class="kw">if</span> time != 0 || pid: </span>
+<span id="cb68-3"><a href="dichotomous-endpoints.html#cb68-3" tabindex="-1"></a></span>
+<span id="cb68-4"><a href="dichotomous-endpoints.html#cb68-4" tabindex="-1"></a>*Compute the predictive margins <span class="kw">by</span> time and treatment</span>
+<span id="cb68-5"><a href="dichotomous-endpoints.html#cb68-5" tabindex="-1"></a></span>
+<span id="cb68-6"><a href="dichotomous-endpoints.html#cb68-6" tabindex="-1"></a>margins time#trt</span>
+<span id="cb68-7"><a href="dichotomous-endpoints.html#cb68-7" tabindex="-1"></a></span>
+<span id="cb68-8"><a href="dichotomous-endpoints.html#cb68-8" tabindex="-1"></a>*Plot the predictive margins. Note that the arguments after the <span class="kw">comma</span> is just to prettify the plot.</span>
+<span id="cb68-9"><a href="dichotomous-endpoints.html#cb68-9" tabindex="-1"></a></span>
+<span id="cb68-10"><a href="dichotomous-endpoints.html#cb68-10" tabindex="-1"></a>marginsplot, graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">plotregion</span>(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">ytitle</span>(<span class="st">&quot;Marginal estimates&quot;</span>) <span class="kw">ylabel</span>(,<span class="bn">nogrid</span>)  <span class="bn">legend</span>(region(<span class="kw">color</span>(<span class="kw">none</span>) lstyle(<span class="kw">none</span>)) <span class="bn">cols</span>(1) <span class="bn">ring</span>(0) bplacement(nwest)) <span class="bn">title</span>(<span class="st">&quot;&quot;</span>)</span>
+<span id="cb68-11"><a href="dichotomous-endpoints.html#cb68-11" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> stata/figures/cat_fig1.pdf, <span class="kw">replace</span> </span></code></pre></div>
+<pre><code>(all strata combined)
 
-*Compute the predictive margins by time and treatment
 
-margins time#trt
 
-*Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
+Predictive margins                                         Number of obs = 294
+Model VCE: OIM
 
-marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(color(white)) ytitle(&quot;Marginal estimates&quot;) ylabel(,nogrid)  legend(region(color(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title(&quot;&quot;)
-graph export stata/figures/cat_fig1.pdf, replace </code></pre>
-<pre><code>## 
-## . use stata/rct, cle(all strata combined)
-## 
-## . quietly melogit catout i.trt i.site covar i.time i.trt#i.time if time != 0 ||
-## &gt;  pid: 
-## 
-## . 
-## . *Compute the predictive margins by time and treatment
-## 
-## . 
-## . margins time#trt
-## 
-## Predictive margins                              Number of obs     =        294
-## Model VCE    : OIM
-## 
-## Expression   : Marginal predicted mean, predict()
-## 
-## ------------------------------------------------------------------------------
-##              |            Delta-method
-##              |     Margin   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
-## -------------+----------------------------------------------------------------
-##     time#trt |
-##   1#Placebo  |   .5476187   .0577701     9.48   0.000     .4343913     .660846
-##    1#Active  |   .3187847   .0540835     5.89   0.000     .2127831    .4247863
-##   2#Placebo  |   .7897137   .0463852    17.03   0.000     .6988004     .880627
-##    2#Active  |   .3770772   .0557815     6.76   0.000     .2677475    .4864068
-##   3#Placebo  |   .8467085   .0410465    20.63   0.000     .7662588    .9271581
-##    3#Active  |   .5147246   .0571038     9.01   0.000     .4028032     .626646
-## ------------------------------------------------------------------------------
-## 
-## . 
-## . *Plot the predictive margins. Note that the arguments after the comma is just
-## &gt;  to prettify the plot.
-## 
-## . 
-## . marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(c
-## &gt; olor(white)) ytitle(&quot;Marginal estimates&quot;) ylabel(,nogrid)  legend(region(colo
-## &gt; r(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title(&quot;&quot;)
-## 
-##   Variables that uniquely identify margins: time trt
-## 
-## . graph export stata/figures/cat_fig1.pdf, replace 
-## (file stata/figures/cat_fig1.pdf written in PDF format)
-## 
-## .</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;stata/figures/cat_fig1.pdf&quot;</span>)</code></pre>
-<div class="figure"><span id="fig:unnamed-chunk-7"></span>
-<img src="stata/figures/cat_fig1.pdf" alt="Margins plot by Stata" width="85%" />
+Expression: Marginal predicted mean, predict()
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    time#trt |
+  1#Placebo  |   .5476187   .0577701     9.48   0.000     .4343913     .660846
+   1#Active  |   .3187847   .0540835     5.89   0.000     .2127831    .4247863
+  2#Placebo  |   .7897137   .0463852    17.03   0.000     .6988004     .880627
+   2#Active  |   .3770772   .0557815     6.76   0.000     .2677475    .4864068
+  3#Placebo  |   .8467085   .0410465    20.63   0.000     .7662588    .9271581
+   3#Active  |   .5147246   .0571038     9.01   0.000     .4028032     .626646
+------------------------------------------------------------------------------
+
+
+Variables that uniquely identify margins: time trt
+
+file stata/figures/cat_fig1.pdf saved as PDF format</code></pre>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="dichotomous-endpoints.html#cb70-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;stata/figures/cat_fig1.pdf&quot;</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7"></span>
+<embed src="stata/figures/cat_fig1.pdf" title="Margins plot by Stata" width="85%" type="application/pdf" />
 <p class="caption">
 Figure 4.1: Margins plot by Stata
 </p>
 </div>
-<p>Plotting in R</p>
-<pre class="sourceCode r"><code class="sourceCode r"> fpred &lt;-<span class="st"> </span><span class="cf">function</span>(formula, data, indices){
-   d &lt;-<span class="st"> </span>data[indices,]
-   fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(formula, <span class="dt">data =</span> d, <span class="dt">family =</span> binomial)
-   pred &lt;-<span class="st"> </span><span class="kw">prediction</span>(fit,
-                      <span class="dt">data =</span> d, 
-                      <span class="dt">at =</span> <span class="kw">list</span>(<span class="dt">trt =</span> <span class="kw">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>), <span class="dt">time =</span> <span class="kw">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;3&quot;</span>))) <span class="op">%&gt;%</span>
-<span class="st">     </span>as_tibble <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">group_by</span>(trt, time) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">summarise</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(fitted)) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">mutate</span>(<span class="dt">name =</span> <span class="kw">paste0</span>(trt, <span class="st">&quot;/&quot;</span>, time)) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">select</span>(name,mean) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">spread</span>(name,mean) <span class="op">%&gt;%</span>
-<span class="st">     </span>as_vector
-  <span class="kw">return</span>(pred)
- }
- 
- data &lt;-<span class="st"> </span><span class="kw">filter</span>(rct, time <span class="op">!=</span><span class="st"> </span><span class="dv">0</span> )
- result &lt;-<span class="st"> </span><span class="kw">boot</span>(<span class="dt">data =</span> data, 
-                <span class="dt">statistic =</span> fpred, 
-                <span class="dt">R =</span> <span class="dv">2000</span>, 
-                <span class="dt">formula =</span> catout <span class="op">~</span><span class="st"> </span>trt <span class="op">+</span><span class="st"> </span>time <span class="op">+</span><span class="st"> </span>trt<span class="op">*</span>time <span class="op">+</span><span class="st"> </span>site <span class="op">+</span><span class="st"> </span>covar <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>pid),
-                <span class="dt">parallel =</span> <span class="st">&quot;multicore&quot;</span>,
-                <span class="dt">ncpus =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw">tidy</span>(<span class="dt">conf.int =</span> <span class="ot">TRUE</span>) 
- 
- result <span class="op">%&gt;%</span>
-<span class="st">   </span><span class="kw">select</span>(<span class="op">-</span>bias) <span class="op">%&gt;%</span>
-<span class="st">   </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-statistic
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-conf.low
-</th>
-<th style="text-align:right;">
-conf.high
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Active/1
-</td>
-<td style="text-align:right;">
-0.318
-</td>
-<td style="text-align:right;">
-0.058
-</td>
-<td style="text-align:right;">
-0.186
-</td>
-<td style="text-align:right;">
-0.417
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Active/2
-</td>
-<td style="text-align:right;">
-0.376
-</td>
-<td style="text-align:right;">
-0.059
-</td>
-<td style="text-align:right;">
-0.248
-</td>
-<td style="text-align:right;">
-0.480
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Active/3
-</td>
-<td style="text-align:right;">
-0.515
-</td>
-<td style="text-align:right;">
-0.069
-</td>
-<td style="text-align:right;">
-0.381
-</td>
-<td style="text-align:right;">
-0.643
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Placebo/1
-</td>
-<td style="text-align:right;">
-0.548
-</td>
-<td style="text-align:right;">
-0.070
-</td>
-<td style="text-align:right;">
-0.403
-</td>
-<td style="text-align:right;">
-0.679
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Placebo/2
-</td>
-<td style="text-align:right;">
-0.791
-</td>
-<td style="text-align:right;">
-0.048
-</td>
-<td style="text-align:right;">
-0.711
-</td>
-<td style="text-align:right;">
-0.897
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Placebo/3
-</td>
-<td style="text-align:right;">
-0.848
-</td>
-<td style="text-align:right;">
-0.039
-</td>
-<td style="text-align:right;">
-0.788
-</td>
-<td style="text-align:right;">
-0.943
-</td>
-</tr>
-</tbody>
-</table>
-<pre class="sourceCode r"><code class="sourceCode r">result <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">separate</span>(term, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;trt&quot;</span>, <span class="st">&quot;time&quot;</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">c</span>(<span class="st">&quot;trt&quot;</span>,<span class="st">&quot;time&quot;</span>), factor) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gf_line</span>(statistic <span class="op">~</span> time, <span class="dt">color =</span> <span class="op">~</span>trt, <span class="dt">group =</span> <span class="op">~</span>trt, 
-              <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.04</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gf_point</span>(<span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.04</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gf_errorbar</span>(conf.low <span class="op">+</span><span class="st"> </span>conf.high <span class="op">~</span><span class="st"> </span>time, <span class="dt">color =</span> <span class="op">~</span><span class="st"> </span>trt, 
-              <span class="dt">width =</span> <span class="fl">.1</span>, 
-              <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.04</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gf_labs</span>(<span class="dt">x =</span> <span class="st">&quot;Time&quot;</span>, 
-          <span class="dt">y =</span> <span class="st">&quot;Probability&quot;</span>, 
-          <span class="dt">color =</span> <span class="st">&quot;Treatment&quot;</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gf_theme</span>(<span class="kw">theme_classic</span>(), <span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gf_refine</span>(<span class="kw">scale_colour_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;Treatment&quot;</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">gf_lims</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</code></pre>
-<p><img src="rct-cookbook_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>The same in R using the <code>marginaleffects</code>-package:</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="dichotomous-endpoints.html#cb71-1" tabindex="-1"></a>mod <span class="ot">&lt;-</span> rct <span class="sc">%&gt;%</span></span>
+<span id="cb71-2"><a href="dichotomous-endpoints.html#cb71-2" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb71-3"><a href="dichotomous-endpoints.html#cb71-3" tabindex="-1"></a>  <span class="fu">glmer</span>(catout <span class="sc">~</span> trt <span class="sc">+</span> time <span class="sc">+</span> trt<span class="sc">*</span>time <span class="sc">+</span> site <span class="sc">+</span> covar <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>pid), </span>
+<span id="cb71-4"><a href="dichotomous-endpoints.html#cb71-4" tabindex="-1"></a>        <span class="at">data =</span> ., </span>
+<span id="cb71-5"><a href="dichotomous-endpoints.html#cb71-5" tabindex="-1"></a>        <span class="at">family =</span> binomial, </span>
+<span id="cb71-6"><a href="dichotomous-endpoints.html#cb71-6" tabindex="-1"></a>        <span class="at">nAGQ =</span> <span class="dv">7</span>)</span>
+<span id="cb71-7"><a href="dichotomous-endpoints.html#cb71-7" tabindex="-1"></a></span>
+<span id="cb71-8"><a href="dichotomous-endpoints.html#cb71-8" tabindex="-1"></a>pred <span class="ot">&lt;-</span> mod <span class="sc">%&gt;%</span> </span>
+<span id="cb71-9"><a href="dichotomous-endpoints.html#cb71-9" tabindex="-1"></a>  <span class="fu">avg_predictions</span>(<span class="at">variables =</span> <span class="fu">list</span>(<span class="at">trt =</span> <span class="fu">c</span>( <span class="st">&quot;Placebo&quot;</span>, <span class="st">&quot;Active&quot;</span>), <span class="at">time =</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span>,<span class="st">&quot;2&quot;</span>, <span class="st">&quot;3&quot;</span>)), <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) </span></code></pre></div>
+<pre><code>Warning: For this model type, `marginaleffects` only takes into account the
+  uncertainty in fixed-effect parameters. You can use the `re.form=NA`
+  argument to acknowledge this explicitly and silence this warning.</code></pre>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="dichotomous-endpoints.html#cb73-1" tabindex="-1"></a>pred</span></code></pre></div>
+<pre><code>
+ time     trt Estimate Std. Error     z Pr(&gt;|z|)     S 2.5 % 97.5 %
+    1 Placebo    0.548     0.0580  9.45   &lt;0.001  67.9 0.434  0.662
+    1 Active     0.318     0.0548  5.80   &lt;0.001  27.2 0.210  0.425
+    2 Placebo    0.791     0.0462 17.13   &lt;0.001 216.1 0.701  0.882
+    2 Active     0.376     0.0561  6.70   &lt;0.001  35.5 0.266  0.486
+    3 Placebo    0.848     0.0411 20.62   &lt;0.001 311.3 0.767  0.929
+    3 Active     0.515     0.0578  8.91   &lt;0.001  60.8 0.402  0.628
+
+Columns: trt, time, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high 
+Type:  response </code></pre>
+<p>The estimated marginal plot is then given by:</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="dichotomous-endpoints.html#cb75-1" tabindex="-1"></a>pred <span class="sc">%&gt;%</span> </span>
+<span id="cb75-2"><a href="dichotomous-endpoints.html#cb75-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(time, estimate, <span class="at">color=</span>trt, <span class="at">group=</span>trt)) <span class="sc">+</span></span>
+<span id="cb75-3"><a href="dichotomous-endpoints.html#cb75-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.04</span>)) <span class="sc">+</span></span>
+<span id="cb75-4"><a href="dichotomous-endpoints.html#cb75-4" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb75-5"><a href="dichotomous-endpoints.html#cb75-5" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high), </span>
+<span id="cb75-6"><a href="dichotomous-endpoints.html#cb75-6" tabindex="-1"></a>                <span class="at">width=</span>.<span class="dv">2</span>,</span>
+<span id="cb75-7"><a href="dichotomous-endpoints.html#cb75-7" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.04</span>)) <span class="sc">+</span> </span>
+<span id="cb75-8"><a href="dichotomous-endpoints.html#cb75-8" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Estimate&quot;</span>) <span class="sc">+</span></span>
+<span id="cb75-9"><a href="dichotomous-endpoints.html#cb75-9" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>) <span class="sc">+</span></span>
+<span id="cb75-10"><a href="dichotomous-endpoints.html#cb75-10" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb75-11"><a href="dichotomous-endpoints.html#cb75-11" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.9</span>)) <span class="sc">+</span></span>
+<span id="cb75-12"><a href="dichotomous-endpoints.html#cb75-12" tabindex="-1"></a>  <span class="fu">scale_colour_brewer</span>(<span class="at">palette =</span> <span class="st">&quot;Set1&quot;</span>, <span class="at">name =</span> <span class="st">&quot;Treatment&quot;</span>)</span></code></pre></div>
+<p><img src="rct-cookbook_files/figure-html/rmixed4plot_02-1.png" width="672" /></p>
+<p>The treatment differences at different timepoints are then calculated with:</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode stata"><code class="sourceCode stata"><span id="cb76-1"><a href="dichotomous-endpoints.html#cb76-1" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;stata/rct&quot;</span>, <span class="kw">clear</span></span>
+<span id="cb76-2"><a href="dichotomous-endpoints.html#cb76-2" tabindex="-1"></a><span class="kw">quietly</span> melogit catout i.trt i.site covar i.time i.trt#i.time <span class="kw">if</span> time != 0 || pid:</span>
+<span id="cb76-3"><a href="dichotomous-endpoints.html#cb76-3" tabindex="-1"></a>margins time, <span class="kw">dydx</span>(trt)</span></code></pre></div>
+<pre><code>(all strata combined)
+
+
+
+Average marginal effects                                   Number of obs = 294
+Model VCE: OIM
+
+Expression: Marginal predicted mean, predict()
+dy/dx wrt:  1.trt
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+0.trt        |  (base outcome)
+-------------+----------------------------------------------------------------
+1.trt        |
+        time |
+          1  |   -.228834    .079152    -2.89   0.004     -.383969   -.0736989
+          2  |  -.4126365   .0726801    -5.68   0.000    -.5550869   -.2701861
+          3  |  -.3319839    .070613    -4.70   0.000    -.4703829   -.1935849
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.</code></pre>
+<p>In R this is done with the <code>marginaleffects</code>-package:</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="dichotomous-endpoints.html#cb78-1" tabindex="-1"></a>mod <span class="ot">&lt;-</span> rct <span class="sc">%&gt;%</span></span>
+<span id="cb78-2"><a href="dichotomous-endpoints.html#cb78-2" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb78-3"><a href="dichotomous-endpoints.html#cb78-3" tabindex="-1"></a>  <span class="fu">glmer</span>(catout <span class="sc">~</span> trt <span class="sc">+</span> time <span class="sc">+</span> trt<span class="sc">*</span>time <span class="sc">+</span> site <span class="sc">+</span> covar <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>pid), </span>
+<span id="cb78-4"><a href="dichotomous-endpoints.html#cb78-4" tabindex="-1"></a>        <span class="at">data =</span> ., </span>
+<span id="cb78-5"><a href="dichotomous-endpoints.html#cb78-5" tabindex="-1"></a>        <span class="at">family =</span> binomial, </span>
+<span id="cb78-6"><a href="dichotomous-endpoints.html#cb78-6" tabindex="-1"></a>        <span class="at">nAGQ =</span> <span class="dv">7</span>)</span>
+<span id="cb78-7"><a href="dichotomous-endpoints.html#cb78-7" tabindex="-1"></a></span>
+<span id="cb78-8"><a href="dichotomous-endpoints.html#cb78-8" tabindex="-1"></a>mod <span class="sc">%&gt;%</span></span>
+<span id="cb78-9"><a href="dichotomous-endpoints.html#cb78-9" tabindex="-1"></a>  <span class="fu">avg_comparisons</span>(<span class="at">variables =</span> <span class="fu">list</span>(<span class="at">trt =</span> <span class="fu">c</span>(<span class="st">&quot;Active&quot;</span>, <span class="st">&quot;Placebo&quot;</span>)), <span class="at">by =</span> <span class="st">&quot;time&quot;</span>, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>, <span class="at">re.form =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<pre><code>
+ Term                     Contrast time Estimate Std. Error    z Pr(&gt;|z|)    S
+  trt mean(Placebo) - mean(Active)    1    0.230     0.0797 2.89  0.00386  8.0
+  trt mean(Placebo) - mean(Active)    2    0.414     0.0728 5.69  &lt; 0.001 26.2
+  trt mean(Placebo) - mean(Active)    3    0.333     0.0704 4.73  &lt; 0.001 18.7
+  2.5 % 97.5 %
+ 0.0741  0.387
+ 0.2717  0.557
+ 0.1947  0.471
+
+Columns: term, contrast, time, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted 
+Type:  response </code></pre>
+<p>We see the results are slightly different to the Stata results, but the differences are small.</p>
 
 </div>
 </div>
@@ -1002,12 +883,13 @@ Placebo/3
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -1015,12 +897,12 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -1035,7 +917,15 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["rct-cookbook.pdf"],
+"view": {
+"link": null,
+"text": null
+},
+"download": ["rct-cookbook.pdf", "rct-cookbook.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
@@ -1049,9 +939,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
