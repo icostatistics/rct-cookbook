@@ -140,13 +140,13 @@ margins time#trt
 *Plot the marginal estimates. Note that the arguments after the comma is just to prettify the plot.
 
 marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(color(white)) ytitle("Marginal estimates") ylabel(,nogrid)  legend(region(color(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title("")
-graph export stata/figures/cont_fig1.pdf, replace 
+graph export stata/figures/cont_fig1.png, replace 
 ```
 
 <!-- ![Simple mixed model marginal estimates](stata/figures/cont_fig1.pdf) -->
 
-```{r, out.width="85%", fig.cap="Simple mixed model marginal plot from Stata"}
-knitr::include_graphics("stata/figures/cont_fig1.pdf")
+```{r, fig.cap="Simple mixed model marginal plot from Stata"}
+knitr::include_graphics("stata/figures/cont_fig1.png")
 ```
 
 We will show how to code this in R below. The code is similar. 
@@ -185,11 +185,11 @@ quietly mixed contout i.trt  i.time  i.trt#i.time i.site covar || pid:
 *Plot the predictive margins. Note that the arguments after the comma is just to prettify the plot.
 
 marginsplot, graphregion(color(white)) graphregion(color(white)) plotregion(color(white)) ytitle("Marginal estimates") ylabel(,nogrid)  legend(region(color(none) lstyle(none)) cols(1) ring(0) bplacement(nwest)) title("")
-graph export stata/figures/cont_fig2.pdf, replace 
+graph export stata/figures/cont_fig2.png, replace 
 ```
 
 ```{r, out.width="85%", fig.cap="Margins plot by Stata"}
-knitr::include_graphics("stata/figures/cont_fig2.pdf")
+knitr::include_graphics("stata/figures/cont_fig2.png")
 ```
 
 In R this can be achieved by:

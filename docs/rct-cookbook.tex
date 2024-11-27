@@ -561,7 +561,7 @@ This is possible to do also by bootstrapping, but it is a bit more complicated:
 \hline
 term & statistic & std.error & conf.low & conf.high\\
 \hline
-Active & 0.601 & 0.082 & 0.449 & 0.768\\
+Active & 0.601 & 0.081 & 0.446 & 0.763\\
 \hline
 \end{tabular}
 
@@ -811,7 +811,7 @@ Plotting i Stata
 \NormalTok{*Plot the predictive margins. Note that the arguments after the }\KeywordTok{comma}\NormalTok{ is just to prettify the plot.}
 
 \NormalTok{marginsplot, graphregion(}\KeywordTok{color}\NormalTok{(}\BaseNTok{white}\NormalTok{)) graphregion(}\KeywordTok{color}\NormalTok{(}\BaseNTok{white}\NormalTok{)) }\BaseNTok{plotregion}\NormalTok{(}\KeywordTok{color}\NormalTok{(}\BaseNTok{white}\NormalTok{)) }\BaseNTok{ytitle}\NormalTok{(}\StringTok{"Marginal estimates"}\NormalTok{) }\KeywordTok{ylabel}\NormalTok{(,}\BaseNTok{nogrid}\NormalTok{)  }\BaseNTok{legend}\NormalTok{(region(}\KeywordTok{color}\NormalTok{(}\KeywordTok{none}\NormalTok{) lstyle(}\KeywordTok{none}\NormalTok{)) }\BaseNTok{cols}\NormalTok{(1) }\BaseNTok{ring}\NormalTok{(0) bplacement(nwest)) }\BaseNTok{title}\NormalTok{(}\StringTok{""}\NormalTok{)}
-\KeywordTok{graph} \KeywordTok{export}\NormalTok{ stata/figures/cat\_fig1.pdf, }\KeywordTok{replace} 
+\KeywordTok{graph} \KeywordTok{export}\NormalTok{ stata/figures/cat\_fig1.png, }\KeywordTok{replace} 
 \end{Highlighting}
 \end{Shaded}
 
@@ -841,12 +841,13 @@ Expression: Marginal predicted mean, predict()
 
 Variables that uniquely identify margins: time trt
 
-file stata/figures/cat_fig1.pdf saved as PDF format
+(file stata/figures/cat_fig1.png not found)
+file stata/figures/cat_fig1.png written in PNG format
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{include\_graphics}\NormalTok{(}\StringTok{"stata/figures/cat\_fig1.pdf"}\NormalTok{)}
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{include\_graphics}\NormalTok{(}\StringTok{"stata/figures/cat\_fig1.png"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 

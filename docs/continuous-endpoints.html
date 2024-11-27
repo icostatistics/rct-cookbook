@@ -462,7 +462,7 @@ covar        0.86338    0.05193  16.625</code></pre>
 <span id="cb15-8"><a href="continuous-endpoints.html#cb15-8" tabindex="-1"></a>*Plot the marginal <span class="kw">estimates</span>. Note that the arguments after the <span class="kw">comma</span> is just to prettify the plot.</span>
 <span id="cb15-9"><a href="continuous-endpoints.html#cb15-9" tabindex="-1"></a></span>
 <span id="cb15-10"><a href="continuous-endpoints.html#cb15-10" tabindex="-1"></a>marginsplot, graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">plotregion</span>(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">ytitle</span>(<span class="st">&quot;Marginal estimates&quot;</span>) <span class="kw">ylabel</span>(,<span class="bn">nogrid</span>)  <span class="bn">legend</span>(region(<span class="kw">color</span>(<span class="kw">none</span>) lstyle(<span class="kw">none</span>)) <span class="bn">cols</span>(1) <span class="bn">ring</span>(0) bplacement(nwest)) <span class="bn">title</span>(<span class="st">&quot;&quot;</span>)</span>
-<span id="cb15-11"><a href="continuous-endpoints.html#cb15-11" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> stata/figures/cont_fig1.pdf, <span class="kw">replace</span> </span></code></pre></div>
+<span id="cb15-11"><a href="continuous-endpoints.html#cb15-11" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> stata/figures/cont_fig1.png, <span class="kw">replace</span> </span></code></pre></div>
 <pre><code>(all strata combined)
 
 
@@ -536,11 +536,12 @@ Expression: Linear prediction, fixed portion, predict()
 
 Variables that uniquely identify margins: time trt
 
-file stata/figures/cont_fig1.pdf saved as PDF format</code></pre>
+(file stata/figures/cont_fig1.png not found)
+file stata/figures/cont_fig1.png written in PNG format</code></pre>
 <!-- ![Simple mixed model marginal estimates](stata/figures/cont_fig1.pdf) -->
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="continuous-endpoints.html#cb17-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig1.pdf&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="continuous-endpoints.html#cb17-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig1.png&quot;</span>)</span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
-<embed src="stata/figures/cont_fig1.pdf" title="Simple mixed model marginal plot from Stata" width="85%" type="application/pdf" />
+<img src="stata/figures/cont_fig1.png" alt="Simple mixed model marginal plot from Stata" width="360" />
 <p class="caption">
 Figure 3.1: Simple mixed model marginal plot from Stata
 </p>
@@ -653,7 +654,7 @@ trtActive:time3 -2.86283    0.26993 -10.606</code></pre>
 <span id="cb22-8"><a href="continuous-endpoints.html#cb22-8" tabindex="-1"></a>*Plot the predictive margins. Note that the arguments after the <span class="kw">comma</span> is just to prettify the plot.</span>
 <span id="cb22-9"><a href="continuous-endpoints.html#cb22-9" tabindex="-1"></a></span>
 <span id="cb22-10"><a href="continuous-endpoints.html#cb22-10" tabindex="-1"></a>marginsplot, graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">plotregion</span>(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">ytitle</span>(<span class="st">&quot;Marginal estimates&quot;</span>) <span class="kw">ylabel</span>(,<span class="bn">nogrid</span>)  <span class="bn">legend</span>(region(<span class="kw">color</span>(<span class="kw">none</span>) lstyle(<span class="kw">none</span>)) <span class="bn">cols</span>(1) <span class="bn">ring</span>(0) bplacement(nwest)) <span class="bn">title</span>(<span class="st">&quot;&quot;</span>)</span>
-<span id="cb22-11"><a href="continuous-endpoints.html#cb22-11" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> stata/figures/cont_fig2.pdf, <span class="kw">replace</span> </span></code></pre></div>
+<span id="cb22-11"><a href="continuous-endpoints.html#cb22-11" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> stata/figures/cont_fig2.png, <span class="kw">replace</span> </span></code></pre></div>
 <pre><code>(all strata combined)
 
 
@@ -680,10 +681,10 @@ Expression: Linear prediction, fixed portion, predict()
 
 Variables that uniquely identify margins: time trt
 
-file stata/figures/cont_fig2.pdf saved as PDF format</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="continuous-endpoints.html#cb24-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig2.pdf&quot;</span>)</span></code></pre></div>
+file stata/figures/cont_fig2.png written in PNG format</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="continuous-endpoints.html#cb24-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;stata/figures/cont_fig2.png&quot;</span>)</span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
-<embed src="stata/figures/cont_fig2.pdf" title="Margins plot by Stata" width="85%" type="application/pdf" />
+<img src="stata/figures/cont_fig2.png" alt="Margins plot by Stata" width="85%" />
 <p class="caption">
 Figure 3.2: Margins plot by Stata
 </p>

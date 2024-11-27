@@ -746,7 +746,7 @@ trtActv:tm3  0.363 -0.594 -0.336 -0.745 -0.029 -0.015 -0.048 -0.161  0.470</code
 <span id="cb68-8"><a href="dichotomous-endpoints.html#cb68-8" tabindex="-1"></a>*Plot the predictive margins. Note that the arguments after the <span class="kw">comma</span> is just to prettify the plot.</span>
 <span id="cb68-9"><a href="dichotomous-endpoints.html#cb68-9" tabindex="-1"></a></span>
 <span id="cb68-10"><a href="dichotomous-endpoints.html#cb68-10" tabindex="-1"></a>marginsplot, graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) graphregion(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">plotregion</span>(<span class="kw">color</span>(<span class="bn">white</span>)) <span class="bn">ytitle</span>(<span class="st">&quot;Marginal estimates&quot;</span>) <span class="kw">ylabel</span>(,<span class="bn">nogrid</span>)  <span class="bn">legend</span>(region(<span class="kw">color</span>(<span class="kw">none</span>) lstyle(<span class="kw">none</span>)) <span class="bn">cols</span>(1) <span class="bn">ring</span>(0) bplacement(nwest)) <span class="bn">title</span>(<span class="st">&quot;&quot;</span>)</span>
-<span id="cb68-11"><a href="dichotomous-endpoints.html#cb68-11" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> stata/figures/cat_fig1.pdf, <span class="kw">replace</span> </span></code></pre></div>
+<span id="cb68-11"><a href="dichotomous-endpoints.html#cb68-11" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> stata/figures/cat_fig1.png, <span class="kw">replace</span> </span></code></pre></div>
 <pre><code>(all strata combined)
 
 
@@ -772,10 +772,10 @@ Expression: Marginal predicted mean, predict()
 
 Variables that uniquely identify margins: time trt
 
-file stata/figures/cat_fig1.pdf saved as PDF format</code></pre>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="dichotomous-endpoints.html#cb70-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;stata/figures/cat_fig1.pdf&quot;</span>)</span></code></pre></div>
+file stata/figures/cat_fig1.png written in PNG format</code></pre>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="dichotomous-endpoints.html#cb70-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;stata/figures/cat_fig1.png&quot;</span>)</span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-7"></span>
-<embed src="stata/figures/cat_fig1.pdf" title="Margins plot by Stata" width="85%" type="application/pdf" />
+<img src="stata/figures/cat_fig1.png" alt="Margins plot by Stata" width="85%" />
 <p class="caption">
 Figure 4.1: Margins plot by Stata
 </p>
